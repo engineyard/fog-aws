@@ -78,6 +78,15 @@ module Fog
             end
           end
 
+          db_security_groups = if db_security_groups = options["DBSecurityGroups"]
+                                 db_security_groups.inject([]) do |r, n|
+                                   self.data[:security_groups][n] || raise(Fog::AWS::RDS::NotFound.new("BSecurityGroup not found: #{n}"))
+                                   r << {"Status" => "active", "DBSecurityGroupName" => n}
+                                 end
+                               else
+                                 []
+                               end
+
           data =
               {
                  "DBInstanceIdentifier"=> db_name,
@@ -100,9 +109,7 @@ module Fog
                  "DBParameterGroups"=> # I think groups should be in the self.data method
                           [{"DBParameterGroupName"=>"default.mysql5.5",
                             "ParameterApplyStatus"=>"in-sync"}],
-                 "DBSecurityGroups"=>
-                          [{"Status"=>"active",
-                            "DBSecurityGroupName"=>"default"}],
+                 "DBSecurityGroups"=> db_security_groups,
                  "LicenseModel"=>"general-public-license",
                  "PreferredBackupWindow"=>"08:00-08:30",
 #                 "ReadReplicaSourceDBInstanceIdentifier" => nil,
