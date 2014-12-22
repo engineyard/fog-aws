@@ -1,3 +1,3 @@
 module Fog
-  VERSION = '1.22.2.ey8'
+  VERSION = '1.26.1.ey1'
 end
