@@ -39,6 +39,8 @@ module Fog
           end
         end
 
+        attr_reader :region
+
         def initialize(options={})
           @region            = options[:region] || 'us-east-1'
           @aws_access_key_id = options[:aws_access_key_id]
@@ -96,6 +98,8 @@ module Fog
 
           setup_credentials(options)
         end
+
+        attr_reader :region
 
         def reload
           @connection.reset
