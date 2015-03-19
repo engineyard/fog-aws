@@ -256,21 +256,25 @@ module Fog
           if params[:bucket_name]
             bucket_name = params[:bucket_name]
 
-            path_style = params.fetch(:path_style, @path_style)
-            if !path_style
-              if COMPLIANT_BUCKET_NAMES !~ bucket_name
-                Fog::Logger.warning("fog: the specified s3 bucket name(#{bucket_name}) is not a valid dns name, which will negatively impact performance.  For details see: http://docs.amazonwebservices.com/AmazonS3/latest/dev/BucketRestrictions.html")
-                path_style = true
-              elsif scheme == 'https' && !path_style && bucket_name =~ /\./
-                Fog::Logger.warning("fog: the specified s3 bucket name(#{bucket_name}) contains a '.' so is not accessible over https as a virtual hosted bucket, which will negatively impact performance.  For details see: http://docs.amazonwebservices.com/AmazonS3/latest/dev/BucketRestrictions.html")
-                path_style = true
-              end
-            end
-
-            if path_style
-              path = bucket_to_path bucket_name, path
+            if params[:bucket_cname]
+              host = bucket_name
             else
-              host = [bucket_name, host].join('.')
+              path_style = params.fetch(:path_style, @path_style)
+              if !path_style
+                if COMPLIANT_BUCKET_NAMES !~ bucket_name
+                  Fog::Logger.warning("fog: the specified s3 bucket name(#{bucket_name}) is not a valid dns name, which will negatively impact performance.  For details see: http://docs.amazonwebservices.com/AmazonS3/latest/dev/BucketRestrictions.html")
+                  path_style = true
+                elsif scheme == 'https' && !path_style && bucket_name =~ /\./
+                  Fog::Logger.warning("fog: the specified s3 bucket name(#{bucket_name}) contains a '.' so is not accessible over https as a virtual hosted bucket, which will negatively impact performance.  For details see: http://docs.amazonwebservices.com/AmazonS3/latest/dev/BucketRestrictions.html")
+                  path_style = true
+                end
+              end
+
+              if path_style
+                path = bucket_to_path bucket_name, path
+              else
+                host = [bucket_name, host].join('.')
+              end
             end
           end
 
@@ -532,6 +536,7 @@ module Fog
           date = Fog::Time.now
 
           params = params.dup
+          stringify_query_keys(params)
           params[:headers] = (params[:headers] || {}).dup
 
           params[:headers]['x-amz-security-token'] = @aws_session_token if @aws_session_token
@@ -728,6 +733,10 @@ DATA
           string_to_sign << canonical_resource
           signed_string = @hmac.sign(string_to_sign)
           Base64.encode64(signed_string).chomp!
+        end
+
+        def stringify_query_keys(params)
+          params[:query] = Hash[params[:query].map { |k,v| [k.to_s, v] }] if params[:query]
         end
       end
     end
