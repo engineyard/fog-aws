@@ -1,5 +1,5 @@
 module Fog
   module AWS
-    VERSION = "0.1.1.ey10"
+    VERSION = "0.1.2.ey1"
   end
 end
