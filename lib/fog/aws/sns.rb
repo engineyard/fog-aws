@@ -34,6 +34,7 @@ module Fog
               region_hash[key] = {
                 :topics        => {},
                 :subscriptions => {},
+                :permissions   => {},
               }
             end
           end
