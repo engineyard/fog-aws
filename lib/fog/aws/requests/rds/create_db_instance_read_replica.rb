@@ -34,7 +34,7 @@ module Fog
           source = self.data[:servers][source_identifier]
           data = {
             'AllocatedStorage'                      => source['AllocatedStorage'],
-            'AutoMinorVersionUpgrade'               => source['AutoMinorVersionUpgrade'],
+            'AutoMinorVersionUpgrade'               => options.key?('AutoMinorVersionUpgrade') ? options['AutoMinorVersionUpgrade'] : source['AutoMinorVersionUpgrade'],
             'AvailabilityZone'                      => options['AvailabilityZone'],
             'DBInstanceClass'                       => options['DBInstanceClass'] || 'db.m1.small',
             'DBInstanceIdentifier'                  => instance_identifier,
