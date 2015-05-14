@@ -11,7 +11,7 @@ module Fog
       KMSInternalException             = Class.new(Fog::Errors::Error)
       KeyUnavailableException          = Class.new(Fog::Errors::Error)
       MalformedPolicyDocumentException = Class.new(Fog::Errors::Error)
-      NotFoundException                = Class.new(Fog::Errors::Error)
+      ValidationError                  = Class.new(Fog::Errors::Error)
 
       requires :aws_access_key_id, :aws_secret_access_key
       recognizes :region, :host, :path, :port, :scheme, :persistent, :use_iam_profile, :aws_session_token, :instrumentor, :instrumentor_name
@@ -30,7 +30,8 @@ module Fog
           @data ||= Hash.new do |hash, region|
             hash[region] = Hash.new do |region_hash, access_key|
               region_hash[access_key] = {
-                :keys => {},
+                :keys    => {},
+                :aliases => {},
               }
             end
           end
@@ -44,9 +45,9 @@ module Fog
 
         def initialize(options={})
           @use_iam_profile = options[:use_iam_profile]
-          @account_id = Fog::AWS::Mock.owner_id
+          @account_id      = Fog::AWS::Mock.owner_id
+          @region          = options[:region] || 'us-east-1'
 
-          @region = options[:region] || 'us-east-1'
           setup_credentials(options)
 
           unless ['ap-northeast-1', 'ap-southeast-1', 'ap-southeast-2', 'eu-central-1', 'eu-west-1', 'us-east-1', 'us-west-1', 'us-west-2', 'sa-east-1'].include?(@region)

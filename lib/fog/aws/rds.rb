@@ -3,9 +3,9 @@ module Fog
     class RDS < Fog::Service
       extend Fog::AWS::CredentialFetcher::ServiceMethods
 
-      class IdentifierTaken < Fog::Errors::Error; end
-
-      class AuthorizationAlreadyExists < Fog::Errors::Error; end
+      AuthorizationAlreadyExists = Class.new(Fog::Errors::Error)
+      IdentifierTaken            = Class.new(Fog::Errors::Error)
+      KMSKeyNotAccessibleFault   = Class.new(Fog::Errors::Error)
 
       requires :aws_access_key_id, :aws_secret_access_key
       recognizes :region, :host, :path, :port, :scheme, :persistent, :use_iam_profile, :aws_session_token, :aws_credentials_expire_at, :version, :instrumentor, :instrumentor_name
@@ -261,6 +261,7 @@ module Fog
           })
         rescue Excon::Errors::HTTPStatusError => error
           match = Fog::AWS::Errors.match_error(error)
+
           if match.empty?
             case error.message
             when 'Not Found'
@@ -270,15 +271,17 @@ module Fog
             end
           else
             raise case match[:code]
-                  when 'DBInstanceNotFound', 'DBParameterGroupNotFound', 'DBSnapshotNotFound', 'DBSecurityGroupNotFound', 'SubscriptionNotFound'
-                    Fog::AWS::RDS::NotFound.slurp(error, match[:message])
-                  when 'DBParameterGroupAlreadyExists'
-                    Fog::AWS::RDS::IdentifierTaken.slurp(error, match[:message])
-                  when 'AuthorizationAlreadyExists'
-                    Fog::AWS::RDS::AuthorizationAlreadyExists.slurp(error, match[:message])
-                  else
-                    Fog::AWS::RDS::Error.slurp(error, "#{match[:code]} => #{match[:message]}")
-                  end
+            when 'DBInstanceNotFound', 'DBParameterGroupNotFound', 'DBSnapshotNotFound', 'DBSecurityGroupNotFound', 'SubscriptionNotFound'
+              Fog::AWS::RDS::NotFound.slurp(error, match[:message])
+            when 'DBParameterGroupAlreadyExists'
+              Fog::AWS::RDS::IdentifierTaken.slurp(error, match[:message])
+            else
+              if Fog::AWS::RDS.const_defined?(match[:code])
+                Fog::AWS::RDS.const_get(match[:code]).slurp(error, match[:message])
+              else
+                Fog::AWS::RDS::Error.slurp(error, "#{match[:code]} => #{match[:message]}")
+              end
+            end
           end
         end
       end

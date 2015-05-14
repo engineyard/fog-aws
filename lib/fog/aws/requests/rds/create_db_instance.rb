@@ -53,7 +53,7 @@ module Fog
       class Mock
         def create_db_instance(db_name, options={})
           response = Excon::Response.new
-          if self.data[:servers] and self.data[:servers][db_name]
+          if self.data[:servers][db_name]
             # I don't know how to raise an exception that contains the excon data
             #response.status = 400
             #response.body = {
@@ -65,7 +65,7 @@ module Fog
           end
 
           # These are the required parameters according to the API
-          required_params = %w{AllocatedStorage DBInstanceClass Engine MasterUserPassword MasterUsername }
+          required_params = %w{ AllocatedStorage DBInstanceClass Engine MasterUserPassword MasterUsername }
           required_params.each do |key|
             unless options.key?(key) and options[key] and !options[key].to_s.empty?
               #response.status = 400
@@ -75,6 +75,49 @@ module Fog
               #}
               #return response
               raise Fog::AWS::RDS::NotFound.new("The request must contain the parameter #{key}")
+            end
+          end
+
+          if !!options["StorageEncrypted"]
+            kms_data = Fog::AWS::KMS.data[@aws_access_key_id][self.region]
+
+            if key_arn = options["KmsKeyId"] # custom key
+              kms_data[:keys].find { |_, key| key["KeyArn"] == key_arn }
+            else # default key
+              alias_name = "aws/rds"
+              key_id = (kms_data[:aliases][alias_name] || {})["KeyId"]
+
+              key_arn = if key_id
+                          kms_data[:keys][key_id]["KeyArn"]
+                        else
+                          key_id = UUID.uuid
+                          default_arn = Fog::AWS::Mock.arn("kms", self.account_id, "key/#{key_id}", self.region)
+
+                          kms_data[:keys][key_id] = {
+                            "KeyUsage"     => "ENCRYPT_DECRYPT",
+                            "AWSAccountId" => self.account_id,
+                            "KeyId"        => key_id,
+                            "Description"  => "Default master key that protects my RDS database volumes when no other key is defined",
+                            "CreationDate" => Time.now,
+                            "Arn"          => default_arn,
+                            "Enabled"      => true,
+                          }
+
+                          kms_data[:aliases][alias_name] = {
+                            "AliasName"   => "alias/#{alias_name}",
+                            "AliasArn"    => Fog::AWS::Mock.arn("kms", self.account_id, "alias/#{alias_name}", self.region),
+                            "TargetKeyId" => key_id,
+                          }
+
+                          default_arn
+                        end
+
+              # this only happens if the account is not subscribed to the kms service
+              #(key_alias.nil? || kms_data[:keys][key_alias["KeyId"]].nil?) &&
+              #raise(KMSKeyNotAccessibleFault.new("The specified KMS key [alias/#{alias_name}] does not exist, is not enabled or you do not have permissions to access it."))
+              #
+
+              options.merge!("KmsKeyId" => key_arn)
             end
           end
 
