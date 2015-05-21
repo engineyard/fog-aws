@@ -11,6 +11,7 @@ module Fog
 
         def all
           requires_one :username, :group_name
+
           policies = if self.username
                        all_by_user(self.username)
                      else
@@ -21,16 +22,21 @@ module Fog
         end
 
         def get(identity)
-          requires :username
+          requires_one :username, :group_name
 
-          data = service.get_user_policy(identity, self.username).body['Policy']
-          new(data) # data is an attribute hash
+          data = if self.username
+                   service.get_user_policy(identity, self.username)
+                 else
+                   service.get_group_policy(identity, self.group_name)
+                 end.body['Policy']
+
+          new(data)
         rescue Fog::AWS::IAM::NotFound
           nil
         end
 
         def new(attributes = {})
-          super({ :username => self.username }.merge!(attributes))
+          super(self.attributes.merge(attributes))
         end
 
         private

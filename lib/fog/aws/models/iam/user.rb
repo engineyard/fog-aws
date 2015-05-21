@@ -3,18 +3,21 @@ module Fog
     class IAM
       class User < Fog::Model
         identity  :id, :aliases => 'UserName'
-        attribute :path, :aliases => 'Path'
-        attribute :arn, :aliases => 'Arn'
-        attribute :user_id, :aliases => 'UserId'
+
+        attribute :path,       :aliases => 'Path'
+        attribute :arn,        :aliases => 'Arn'
+        attribute :user_id,    :aliases => 'UserId'
         attribute :created_at, :aliases => 'CreateDate', :type => :time
 
         def access_keys
           requires :id
+
           service.access_keys(:username => id)
         end
 
         def destroy
           requires :id
+
           service.delete_user(id)
           true
         end
@@ -25,6 +28,7 @@ module Fog
 
         def policies
           requires :id
+
           service.policies(:username => id)
         end
 

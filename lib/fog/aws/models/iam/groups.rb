@@ -15,7 +15,7 @@ module Fog
           merge_attributes(options)
 
           data, records = if self.username
-                            response = service.list_groups_for_user(self.username)
+                            response = service.list_groups_for_user(self.username, options)
                             [response.body, response.body['GroupsForUser']]
                           else
                             response = service.list_groups(options)
