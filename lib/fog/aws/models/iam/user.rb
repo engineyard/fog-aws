@@ -8,11 +8,9 @@ module Fog
         attribute :user_id, :aliases => 'UserId'
         attribute :created_at, :aliases => 'CreateDate', :type => :time
 
-        def save
+        def access_keys
           requires :id
-          data = service.create_user(id, path || '/').body['User']
-          merge_attributes(data)
-          true
+          service.access_keys(:username => id)
         end
 
         def destroy
@@ -21,14 +19,20 @@ module Fog
           true
         end
 
+        def groups
+          service.groups(:username => self.identity)
+        end
+
         def policies
           requires :id
           service.policies(:username => id)
         end
 
-        def access_keys
+        def save
           requires :id
-          service.access_keys(:username => id)
+          data = service.create_user(id, path || '/').body['User']
+          merge_attributes(data)
+          true
         end
       end
     end
