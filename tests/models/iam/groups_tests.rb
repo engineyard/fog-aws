@@ -37,5 +37,23 @@ Shindo.tests("Fog::Compute[:iam] | groups", ['aws','iam']) do
     tests('#policies', '#all').succeeds do
       group.policies.all.map(&:id).include?(policy.id)
     end
+
+    tests('#users', 'when none').succeeds do
+      group.users.empty?
+    end
+
+    user = nil
+
+    tests('#add_user').succeeds do
+      user = service.users.create(id: 'fog-test')
+
+      group.add_user(user)
+
+      group.users.include?(user)
+    end
+
+    tests('#users').succeeds do
+      group.reload.users.map(&:identity).include?(user.identity)
+    end
   end
 end

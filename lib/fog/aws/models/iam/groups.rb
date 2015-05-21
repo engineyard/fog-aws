@@ -27,7 +27,12 @@ module Fog
         end
 
         def get(identity)
-          new(service.get_group(identity).body['Group'])
+          data = service.get_group(identity)
+
+          group = data.body['Group']
+          users = data.body['Users'].map { |u| service.users.new(u) }
+
+          new(group.merge(:users => users))
         rescue Fog::AWS::IAM::NotFound
           nil
         end

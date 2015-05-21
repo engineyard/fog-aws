@@ -5,14 +5,22 @@ module Fog
 
         identity :id, aliases: 'GroupId'
 
-        attribute :arn,  aliases: 'Arn'
-        attribute :name, aliases: 'GroupName'
-        attribute :path, aliases: 'Path'
+        attribute :arn,   aliases: 'Arn'
+        attribute :name,  aliases: 'GroupName'
+        attribute :path,  aliases: 'Path'
+        attribute :users, aliases: 'Users', type: :array
 
-        def add_user(username)
+        def add_user(user_or_name)
           requires :name
 
-          service.add_user_to_group(self.name, username)
+          user = if user_or_name.is_a?(Fog::AWS::IAM::User)
+                   user_or_name
+                 else
+                   service.users.new(id: user_or_name)
+                 end
+
+          service.add_user_to_group(self.name, user.identity)
+          merge_attributes(:users => self.users + [user])
         end
 
         def attach(policy_arn)
