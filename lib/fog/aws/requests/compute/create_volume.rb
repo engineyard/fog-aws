@@ -12,7 +12,7 @@ module Fog
         # * options<~Hash>
         #   * 'SnapshotId'<~String> - Optional, snapshot to create volume from
         #   * 'VolumeType'<~String> - Optional, volume type. standard or io1, default is standard.
-        #   * 'Iops'<~Integer> - Number of IOPS the volume supports. Required if VolumeType is io1, must be between 1 and 4000.
+        #   * 'Iops'<~Integer> - Number of IOPS the volume supports. Required if VolumeType is io1, must be between 1 and 20000.
         #   * 'Encrypted'<~Boolean> - Optional, specifies whether the volume should be encrypted, default is false.
         #
         # ==== Returns
@@ -82,8 +82,8 @@ module Fog
                 raise Fog::Compute::AWS::Error.new("VolumeIOPSLimit => Volume iops of #{iops} is too low; minimum is 100.")
               end
 
-              if iops > 4000
-                raise Fog::Compute::AWS::Error.new("VolumeIOPSLimit => Volume iops of #{iops} is too high; maximum is 4000.")
+              if iops > 20000
+                raise Fog::Compute::AWS::Error.new("VolumeIOPSLimit => Volume iops of #{iops} is too high; maximum is 20000.")
               end
             end
 
