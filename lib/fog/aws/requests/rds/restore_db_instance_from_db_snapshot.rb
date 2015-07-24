@@ -39,13 +39,14 @@ module Fog
               'us-east-1a'
             end
 
-          option_group_membership = if option_group_name = options['OptionGroupName']
-                                      [{ 'OptionGroupMembership' =>
-                                        [{ 'OptionGroupName' => option_group_name, 'Status' => "pending-apply"}] }]
-                                    else
-                                      [{ 'OptionGroupMembership' =>
-                                        [{ 'OptionGroupName' => 'default: mysql-5.6', 'Status' => "pending-apply"}] }]
-                                    end
+          option_group_membership =
+            if option_group_name = options['OptionGroupName']
+              [{ 'OptionGroupMembership' =>
+                [{ 'OptionGroupName' => option_group_name, 'Status' => "pending-apply"}] }]
+            else
+              [{ 'OptionGroupMembership' =>
+                [{ 'OptionGroupName' => 'default: mysql-5.6', 'Status' => "pending-apply"}] }]
+            end
 
           data = {
             "AllocatedStorage"                 => options['AllocatedStorage'] || snapshot['AllocatedStorage'],
@@ -67,7 +68,7 @@ module Fog
             "LicenseModel"                     => options['LicenseModel'] || snapshot['LicenseModel'] || 'general-public-license',
             "MasterUsername"                   => options['MasterUsername'] || snapshot['MasterUsername'],
             "MultiAZ"                          => !!multi_az,
-            #"OptiongroupMemberships"           => option_group_membership,
+            "OptiongroupMemberships"           => option_group_membership,
             "PendingModifiedValues"            => { 'MasterUserPassword' => '****' }, # This clears when is available
             "PreferredBackupWindow"            => '08:00-08:30',
             "PreferredMaintenanceWindow"       => 'mon:04:30-mon:05:00',
