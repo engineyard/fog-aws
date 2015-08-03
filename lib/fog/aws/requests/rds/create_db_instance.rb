@@ -82,7 +82,7 @@ module Fog
             raise Fog::AWS::RDS::InvalidParameterCombination.new('Requesting a specific availability zone is not valid for Multi-AZ instances.')
           end
 
-           data = {
+          data = {
             "AllocatedStorage"                 => options["AllocatedStorage"],
             "AutoMinorVersionUpgrade"          => options["AutoMinorVersionUpgrade"].nil? ? true : options["AutoMinorVersionUpgrade"],
             "AvailabilityZone"                 => options["AvailabilityZone"],
