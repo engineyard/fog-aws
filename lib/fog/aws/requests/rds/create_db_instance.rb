@@ -78,41 +78,40 @@ module Fog
             end
           end
 
-          data =
-              {
-                 "DBInstanceIdentifier"=> db_name,
-                 "DBName" => options["DBName"],
-                 "InstanceCreateTime" => nil,
-                 "AutoMinorVersionUpgrade"=> options["AutoMinorVersionUpgrade"].nil? ? true : options["AutoMinorVersionUpgrade"],
-                 "Endpoint"=>{},
-                 "ReadReplicaDBInstanceIdentifiers"=>[],
-                 "PreferredMaintenanceWindow"=>"mon:04:30-mon:05:00",
-                 "Engine"=> options["Engine"],
-                 "EngineVersion"=> options["EngineVersion"] || "5.5.12",
-                 "PendingModifiedValues"=>{"MasterUserPassword"=>"****"}, # This clears when is available
-                 "MultiAZ"=> !!options['MultiAZ'],
-                 "MasterUsername"=> options["MasterUsername"],
-                 "DBInstanceClass"=> options["DBInstanceClass"],
-                 "DBInstanceStatus"=>"creating",
-                 "BackupRetentionPeriod"=> options["BackupRetentionPeriod"] || 1,
-                 "AllocatedStorage"=> options["AllocatedStorage"],
-                 "Iops" => options["Iops"],
-                 "DBParameterGroups"=> # I think groups should be in the self.data method
-                          [{"DBParameterGroupName"=>"default.mysql5.5",
-                            "ParameterApplyStatus"=>"in-sync"}],
-                 "DBSecurityGroups"=>
-                          [{"Status"=>"active",
-                            "DBSecurityGroupName"=>"default"}],
-                 "LicenseModel"=>"general-public-license",
-                 "PreferredBackupWindow"=>"08:00-08:30",
-#                 "ReadReplicaSourceDBInstanceIdentifier" => nil,
-#                 "LatestRestorableTime" => nil,
-                 "AvailabilityZone" => options["AvailabilityZone"],
-                 "DBSubnetGroupName" => options["DBSubnetGroupName"],
-                 "PubliclyAccessible" => options["PubliclyAccessible"],
-                 "VpcSecurityGroups" => options["VpcSecurityGroups"],
-                 "StorageType" => options["StorageType"],
-             }
+          if !!options["MultiAZ"] && !!options["AvailabilityZone"]
+            raise Fog::AWS::RDS::InvalidParameterCombination.new('Requesting a specific availability zone is not valid for Multi-AZ instances.')
+          end
+
+           data = {
+            "AllocatedStorage"                 => options["AllocatedStorage"],
+            "AutoMinorVersionUpgrade"          => options["AutoMinorVersionUpgrade"].nil? ? true : options["AutoMinorVersionUpgrade"],
+            "AvailabilityZone"                 => options["AvailabilityZone"],
+            "BackupRetentionPeriod"            => options["BackupRetentionPeriod"] || 1,
+            "CACertificateIdentifier"          => "rds-ca-2015",
+            "DBInstanceClass"                  => options["DBInstanceClass"],
+            "DBInstanceIdentifier"             => db_name,
+            "DBInstanceStatus"                 =>"creating",
+            "DBName"                           => options["DBName"],
+            "DBParameterGroups"                => [{ "DBParameterGroupName" => "default.mysql5.5", "ParameterApplyStatus" => "in-sync" }],
+            "DBSecurityGroups"                 => [{ "Status" => "active", "DBSecurityGroupName" => "default" }],
+            "DBSubnetGroupName"                => options["DBSubnetGroupName"],
+            "Endpoint"                         =>{},
+            "Engine"                           => options["Engine"],
+            "EngineVersion"                    => options["EngineVersion"] || "5.5.12",
+            "InstanceCreateTime"               => nil,
+            "Iops"                             => options["Iops"],
+            "LicenseModel"                     => "general-public-license",
+            "MasterUsername"                   => options["MasterUsername"],
+            "MultiAZ"                          => !!options["MultiAZ"],
+            "PendingModifiedValues"            => { "MasterUserPassword" => "****" }, # This clears when is available
+            "PreferredBackupWindow"            => options["PreferredBackupWindow"] || "08:00-08:30",
+            "PreferredMaintenanceWindow"       => options["PreferredMaintenanceWindow"] || "mon:04:30-mon:05:00",
+            "PubliclyAccessible"               => !!options["PubliclyAccessible"],
+            "ReadReplicaDBInstanceIdentifiers" => [],
+            "StorageEncrypted"                 => options["StorageEncrypted"] || false,
+            "StorageType"                      => options["StorageType"] || "standard",
+            "VpcSecurityGroups"                => options["VpcSecurityGroups"],
+          }
 
           self.data[:servers][db_name] = data
           response.body = {
