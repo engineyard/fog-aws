@@ -78,6 +78,10 @@ module Fog
             end
           end
 
+          if multi_az = !!options["MultiAZ"] && !!options["AvailabilityZone"]
+            raise Fog::AWS::RDS::InvalidParameterCombination.new('Requesting a specific availability zone is not valid for Multi-AZ instances.')
+          end
+
           data =
               {
                  "DBInstanceIdentifier"=> db_name,
@@ -90,7 +94,7 @@ module Fog
                  "Engine"=> options["Engine"],
                  "EngineVersion"=> options["EngineVersion"] || "5.5.12",
                  "PendingModifiedValues"=>{"MasterUserPassword"=>"****"}, # This clears when is available
-                 "MultiAZ"=> !!options['MultiAZ'],
+                 "MultiAZ"=> multi_az,
                  "MasterUsername"=> options["MasterUsername"],
                  "DBInstanceClass"=> options["DBInstanceClass"],
                  "DBInstanceStatus"=>"creating",
