@@ -61,6 +61,9 @@ module Fog
               #else
               #  modified_server = server["PendingModifiedValues"].merge!(options) # it appends
               #end
+              if options["NewDBInstanceIdentifier"]
+                options["DBInstanceIdentifier"] = options.delete("NewDBInstanceIdentifier")
+              end
               self.data[:servers][db_name]["PendingModifiedValues"].merge!(options) # it appends
               self.data[:servers][db_name]["DBInstanceStatus"] = "modifying"
               response.status = 200
