@@ -73,6 +73,15 @@ module Fog
                 options.merge!("DBSecurityGroups" => db_security_groups)
               end
 
+              vpc_security_group_ids = options.delete("VpcSecurityGroups")
+              if vpc_security_group_ids && vpc_security_group_ids.any?
+                vpc_security_groups =
+                  vpc_security_group_ids.inject([]) do |r, security_group_name|
+                  r << {"Status" => "active", "VpcSecurityGroupId" => security_group_name }
+                end
+                options.merge!("VpcSecurityGroups" => vpc_security_groups)
+              end
+
               self.data[:servers][db_name]["PendingModifiedValues"].merge!(options) # it appends
               self.data[:servers][db_name]["DBInstanceStatus"] = "modifying"
               response.status = 200
