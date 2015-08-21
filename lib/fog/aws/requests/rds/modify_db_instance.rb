@@ -66,18 +66,15 @@ module Fog
                 options["DBInstanceIdentifier"] = options.delete("NewDBInstanceIdentifier")
               end
 
-              db_security_group_names = Array(options.delete("DBSecurityGroups"))
-
               rds_security_groups = self.data[:security_groups].values
+              ec2_security_groups = Fog::Compute::AWS::Mock.data[@region][@aws_access_key_id][:security_groups].values
 
-              db_security_groups = db_security_group_names.map do |r, group_name|
+              db_security_groups = Array(options.delete("DBSecurityGroups")).map do |r, group_name|
                 unless rds_security_groups.find { |sg| sg["DBSecurityGroupName"] == group_name }
                   raise Fog::AWS::RDS::Error.new("InvalidParameterValue => Invalid security group , groupId= , groupName=#{group_name}")
                 end
                 r << {"Status" => "active", "DBSecurityGroupName" => group_name }
               end
-
-              ec2_security_groups = Fog::Compute::AWS::Mock.data[@region][@aws_access_key_id][:security_groups].values
 
               vpc_security_groups = Array(options.delete("VpcSecurityGroups")).map do |group_id|
                 unless ec2_security_groups.find { |sg| sg["groupId"] == group_id }

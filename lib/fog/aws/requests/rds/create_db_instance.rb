@@ -87,7 +87,6 @@ module Fog
           rds_security_groups = self.data[:security_groups].values
 
           db_security_groups = db_security_group_names.map do |group_name|
-            ap rds_security_groups
             unless rds_security_groups.find { |sg| sg["DBSecurityGroupName"] == group_name }
               raise Fog::AWS::RDS::Error.new("InvalidParameterValue => Invalid security group , groupId= , groupName=#{group_name}")
             end
