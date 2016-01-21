@@ -31,9 +31,21 @@ module Fog
         end
 
         def defaults(family)
-          data = service.describe_engine_default_parameters(family).body['DescribeEngineDefaultParametersResult']['Parameters']
+          results = []
+          data = service.describe_engine_default_parameters(family).body
 
-          load(data)
+          if data
+            marker = data['DescribeEngineDefaultParametersResult']['Marker']
+            results += data['DescribeEngineDefaultParametersResult']['Parameters']
+            if marker
+              until marker.nil?
+                paged = service.describe_engine_default_parameters(family, 'Marker' => marker).body
+                marker = paged['DescribeEngineDefaultParametersResult']['Marker']
+                results += paged['DescribeEngineDefaultParametersResult']['Parameters']
+              end
+            end
+          end
+          load(results)
         end
       end
     end
