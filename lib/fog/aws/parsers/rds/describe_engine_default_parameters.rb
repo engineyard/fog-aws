@@ -20,7 +20,7 @@ module Fog
               @response['DescribeEngineDefaultParametersResult']['Parameters'] << @db_parameter
               @db_parameter = new_db_parameter
             when 'Marker'
-              @response['DescribeEngineDefaultParametersResult']['Marker'] = @value
+              @response['DescribeEngineDefaultParametersResult']['Marker'] = @value.strip
             when 'RequestId'
               @response['ResponseMetadata'][name] = @value
             else
