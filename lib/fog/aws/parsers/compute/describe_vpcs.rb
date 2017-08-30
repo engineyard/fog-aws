@@ -22,7 +22,7 @@ module Fog
               when 'vpcSet.item.cidrBlockAssociationSet.item'
                 @current_cidr_block = {}
 
-              when 'vpcSet.item.cidrBlockAssociationSet.item'
+              when 'vpcSet.item.ipv6CidrBlockAssociationSet.item'
                 @current_ipv6_block = {}
             end
           end
