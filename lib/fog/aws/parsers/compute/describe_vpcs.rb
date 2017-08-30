@@ -28,8 +28,6 @@ module Fog
           end
 
           def end_element(name)
-            puts "--> #{@context[1 .. -1].join('.')}"
-
             case @context[1 .. -1].join('.')
               # tagSet
 
