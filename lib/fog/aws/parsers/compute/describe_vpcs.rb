@@ -81,7 +81,6 @@ module Fog
                 @response['vpcSet'] << @current_vpc
 
               # root
-
               when 'requestId'
                 @response[name] = value
             end
