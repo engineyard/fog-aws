@@ -40,13 +40,14 @@ module Fog
 
           route_table = self.data[:route_tables].find { |routetable| routetable["routeTableId"].eql? route_table_id }
           if !route_table.nil? && destination_cidr_block
-            if !options['gatewayId'].nil? || !options['instanceId'].nil? || !options['networkInterfaceId'].nil?
-              if !options['gatewayId'].nil? && self.internet_gateways.all('internet-gateway-id'=>options['gatewayId']).first.nil?
-                raise Fog::Compute::AWS::NotFound.new("The gateway ID '#{options['gatewayId']}' does not exist")
-              elsif !options['instanceId'].nil? && self.servers.all('instance-id'=>options['instanceId']).first.nil?
-                raise Fog::Compute::AWS::NotFound.new("The instance ID '#{options['instanceId']}' does not exist")
-              elsif !options['networkInterfaceId'].nil? && self.network_interfaces.all('networkInterfaceId'=>options['networkInterfaceId']).first.nil?
-                raise Fog::Compute::AWS::NotFound.new("The networkInterface ID '#{options['networkInterfaceId']}' does not exist")
+            if !options['GatewayId'].nil? || !options['InstanceId'].nil? || !options['NetworkInterfaceId'].nil? || !options['NatGatewayId'].nil?
+              if !options['GatewayId'].nil? && self.internet_gateways.all('internet-gateway-id'=>options['GatewayId']).first.nil?
+                raise Fog::Compute::AWS::NotFound.new("The gateway ID '#{options['GatewayId']}' does not exist")
+              elsif !options['instanceId'].nil? && self.servers.all('instance-id'=>options['InstanceId']).first.nil?
+                raise Fog::Compute::AWS::NotFound.new("The instance ID '#{options['InstanceId']}' does not exist")
+              elsif !options['NetworkInterfaceId'].nil? && self.data[:network_interfaces][options['NetworkInterfaceId']].nil?
+                binding.pry
+                raise Fog::Compute::AWS::NotFound.new("The networkInterface ID '#{options['NetworkInterfaceId']}' does not exist")
               elsif route_table['routeSet'].find { |route| route['destinationCidrBlock'].eql? destination_cidr_block }.nil?
                 raise Fog::Compute::AWS::Error, "RouteAlreadyExists => The route identified by #{destination_cidr_block} doesn't exist."
               else

@@ -145,6 +145,9 @@ module Fog
       def self.zone_id
         "zone-#{Fog::Mock.random_hex(8)}"
       end
+      def self.nat_gateway_id
+        "subnet-#{Fog::Mock.random_hex(17)}"
+      end
       def self.change_id
         Fog::Mock.random_letters_and_numbers(14)
       end
