@@ -79,6 +79,11 @@ module Fog
           end
         end
 
+        def update(attributes)
+          merge_attributes(attributes)
+          save
+        end
+
         # TODO: implement #alarms
 
         def auto_scaling_group
@@ -106,6 +111,22 @@ module Fog
           requires :id
           requires :auto_scaling_group_name
           service.delete_policy(auto_scaling_group_name, id)
+        end
+
+        def reload
+          requires :identity, :auto_scaling_group_name
+
+          data = begin
+            collection.get(identity, auto_scaling_group_name)
+          rescue Excon::Errors::SocketError
+            nil
+          end
+
+          return unless data
+
+          new_attributes = data.attributes
+          merge_attributes(new_attributes)
+          self
         end
 
         private
