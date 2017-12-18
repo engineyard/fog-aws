@@ -32,6 +32,7 @@ module Fog
         end
 
         def update(attributes)
+          requires :id
           merge_attributes(attributes)
           save
         end

@@ -23,4 +23,11 @@ Shindo.tests('AWS::AutoScaling | policies', ['aws', 'auto_scaling_m', 'models'])
   Fog::AWS[:auto_scaling].groups.new(group_params).save
 
   collection_tests(Fog::AWS[:auto_scaling].policies, params, true)
+
+  policy = Fog::AWS[:auto_scaling].policies.create(params)
+
+  test 'updates policy' do
+    policy.update(scaling_adjustment: 2)
+    returns(true) { policy.reload.scaling_adjustment == 2 }
+  end
 end
