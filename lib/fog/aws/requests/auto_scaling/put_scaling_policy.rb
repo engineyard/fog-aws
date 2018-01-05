@@ -98,6 +98,9 @@ module Fog
             options.merge!(AWS.indexed_param('StepAdjustments.member.%d.MetricIntervalUpperBound', steps.map { |step| step['MetricIntervalUpperBound']}))
             options.merge!(AWS.indexed_param('StepAdjustments.member.%d.ScalingAdjustment', steps.map { |step| step['ScalingAdjustment']}))
           end
+          if target_tracking = options.delete('TargetTrackingConfiguration')
+            options.merge!(Fog::AWS.serialize_keys('TargetTrackingConfiguration', target_tracking))
+          end
           request({
             'Action'               => 'PutScalingPolicy',
             'AutoScalingGroupName' => auto_scaling_group_name,

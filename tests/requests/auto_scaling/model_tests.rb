@@ -207,11 +207,11 @@ Shindo.tests('AWS::AutoScaling | model_tests', ['aws', 'auto_scaling']) do
                                                                  predefined_metric_specification: {
                                                                    predefined_metric_type: 'ASGAverageCPUUtilization'
                                                                  },
-                                                                 target_value: 50
+                                                                 target_value: 70
                                                                },
                                                                auto_scaling_group_name: asg_id })
         tests('arn not nil').returns(false) { asg_policy.arn.nil? }
-        tests('nested attributes are available with snake case').returns(true) { asg_policy.target_tracking_configuration[:target_value] == 50 }
+        tests('nested attributes are available with snake case').returns(true) { asg_policy.target_tracking_configuration[:target_value] == 70 }
       end
 
       tests('destroy') do
