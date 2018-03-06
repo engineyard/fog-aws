@@ -151,6 +151,9 @@ module Fog
       def self.change_id
         Fog::Mock.random_letters_and_numbers(14)
       end
+      def self.instance_profile_association_id
+        "iip-assoc-#{Fog::Mock.random_hex(17)}"
+      end
       def self.nameservers
         [
           'ns-2048.awsdns-64.com',
