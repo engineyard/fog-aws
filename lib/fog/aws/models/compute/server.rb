@@ -52,6 +52,7 @@ module Fog
         attribute :user_data
         attribute :virtualization_type,      :aliases => 'virtualizationType'
         attribute :vpc_id,                   :aliases => 'vpcId'
+        attribute :credit_specification,     :aliases => 'creditSpecification'
 
         attr_accessor                        :password
         attr_writer                          :iam_instance_profile_name, :iam_instance_profile_arn
@@ -164,6 +165,7 @@ module Fog
             'SecurityGroupId'             => security_group_ids,
             'SubnetId'                    => subnet_id,
             'UserData'                    => user_data,
+            'CreditSpecification'         => credit_specification,
           }
           options.delete_if {|key, value| value.nil?}
 
