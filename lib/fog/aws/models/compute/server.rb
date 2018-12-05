@@ -165,7 +165,6 @@ module Fog
             'SecurityGroupId'             => security_group_ids,
             'SubnetId'                    => subnet_id,
             'UserData'                    => user_data,
-            'CreditSpecification'         => credit_specification,
           }
           options.delete_if {|key, value| value.nil?}
 
@@ -195,6 +194,10 @@ module Fog
             end
           else
             options.delete('SubnetId')
+          end
+
+          if credit_specification
+            options['CreditSpecification.CpuCredits'] = credit_specification
           end
           options
         end
