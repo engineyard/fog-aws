@@ -11,7 +11,6 @@ module Fog
         # * options<~Hash>:
         #   * InstanceTenancy<~String> - The allowed tenancy of instances launched into the VPC. A value of default
         #     means instances can be launched with any tenancy; a value of dedicated means instances must be launched with tenancy as dedicated.
-        #     please not that the documentation is incorrect instanceTenancy will not work while InstanceTenancy will
         #
         # === Returns
         # * response<~Excon::Response>:
@@ -52,7 +51,8 @@ module Fog
                 'enableDnsHostnames'    => false,
                 'mapPublicIpOnLaunch'   => false,
                 'classicLinkEnabled'    => false,
-                'classicLinkDnsSupport' => false
+                'classicLinkDnsSupport' => false,
+                'instanceTenancy'       => options['InstanceTenancy'] || 'default'
               }
               self.data[:vpcs].push(vpc)
 
