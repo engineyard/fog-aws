@@ -94,6 +94,7 @@ module Fog
         def save
           options = {
             :matcher => matcher,
+            :protocol => protocol,
             :healthy_threshold_count => healthy_threshold_count,
             :unhealthy_threshold_count => unhealthy_threshold_count,
             :health_check_interval_seconds => health_check_interval_seconds,

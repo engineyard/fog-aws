@@ -18,6 +18,11 @@ Shindo.tests('AWS::elbv2 | target_group', ['aws', 'elbv2', 'models']) do
       @target_group.tg_attributes
     end
 
+    tests('https_protocol').returns('HTTPS') do
+      https_tg = ELBV2.target_groups.create(:name => "test-tg-2", :protocol => 'HTTPS')
+      https_tg.protocol
+    end
+
     tests('#register_targets') do
       @target_group.register_targets(@server1.id)
 
