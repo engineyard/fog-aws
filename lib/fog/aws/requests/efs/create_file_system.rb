@@ -16,7 +16,7 @@ module Fog
             :method           => 'POST',
             :expects          => 201,
             'CreationToken'   => creation_token,
-            'PerformanceMode' => options[:peformance_mode] || 'generalPurpose'
+            'PerformanceMode' => options[:performance_mode] || 'generalPurpose'
           })
         end
       end
