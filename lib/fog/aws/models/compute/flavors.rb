@@ -355,12 +355,32 @@ module Fog
           :instance_store_volumes  => 0
         },
         {
+          :id                      => 'c5.12xlarge',
+          :name                    => 'C5 Twelve Extra Large',
+          :bits                    => 64,
+          :cores                   => 48,
+          :disk                    => 0,
+          :ram                     => 103079,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
           :id                      => 'c5.18xlarge',
           :name                    => 'C5 Eighteen Extra Large',
           :bits                    => 64,
           :cores                   => 72,
           :disk                    => 0,
           :ram                     => 154618,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c5.24xlarge',
+          :name                    => 'C5 Twenty Four Extra Large',
+          :bits                    => 64,
+          :cores                   => 96,
+          :disk                    => 0,
+          :ram                     => 206158,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
         },
@@ -415,6 +435,16 @@ module Fog
           :instance_store_volumes  => 1
         },
         {
+          :id                      => 'c5d.12xlarge',
+          :name                    => 'C5d Twelve Extra Large',
+          :bits                    => 64,
+          :cores                   => 48,
+          :disk                    => 1800,
+          :ram                     => 103079,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 2
+        },
+        {
           :id                      => 'c5d.18xlarge',
           :name                    => 'C5d Eighteen Extra Large',
           :bits                    => 64,
@@ -423,6 +453,16 @@ module Fog
           :ram                     => 154618,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 2
+        },
+        {
+          :id                      => 'c5d.24xlarge',
+          :name                    => 'C5d Twenty Four Extra Large',
+          :bits                    => 64,
+          :cores                   => 96,
+          :disk                    => 3600,
+          :ram                     => 206158,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 4
         },
         {
           :id                      => 'g2.2xlarge',
@@ -824,12 +864,32 @@ module Fog
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
         },
+	{
+          :id                      => 'r5.8xlarge',
+          :name                    => 'R5 Eight Extra Large',
+          :bits                    => 64,
+          :cores                   => 32,
+          :disk                    => 0,
+          :ram                     => 274878,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
         {
           :id                      => "r5.12xlarge",
           :name                    => "R5 Twelve Extra Large",
           :bits                    => 64,
           :cores                   => 48,
           :ram                     => 412316,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+	{
+          :id                      => "r5.16xlarge",
+          :name                    => "R5 Sixteen Extra Large",
+          :bits                    => 64,
+          :cores                   => 64,
+          :ram                     => 549756,
           :disk                    => 0,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
@@ -1105,6 +1165,16 @@ module Fog
           :instance_store_volumes  => 0
         },
         {
+          :id                      => "m5.8xlarge",
+          :name                    => "M5 Eight Extra Large",
+          :bits                    => 64,
+          :cores                   => 32,
+          :ram                     => 137439,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+         },
+        {
           :id                      => "m5.12xlarge",
           :name                    => "M5 Twelve Extra Large",
           :bits                    => 64,
@@ -1114,6 +1184,16 @@ module Fog
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
         },
+        { 
+          :id                      => "m5.16xlarge",
+          :name                    => "M5 Sixteen Extra Large",
+          :bits                    => 64,
+          :cores                   => 64,
+          :ram                     => 274878,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+         },
         {
           :id                      => "m5.24xlarge",
           :name                    => "M5 Twenty Four Extra Large",
@@ -1165,6 +1245,16 @@ module Fog
           :instance_store_volumes  => 2
         },
         {
+          :id                      => "m5d.8xlarge",
+          :name                    => "M5d Eight Extra Large",
+          :bits                    => 64,
+          :cores                   => 32,
+          :ram                     => 137439,
+          :disk                    => 1200,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 2
+        },
+        {
           :id                      => "m5d.12xlarge",
           :name                    => "M5d Twelve Extra Large",
           :bits                    => 64,
@@ -1173,6 +1263,16 @@ module Fog
           :disk                    => 1800,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 2
+        },
+        { 
+          :id                      => "m5d.16xlarge",
+          :name                    => "M5d Sixteen Extra Large",
+          :bits                    => 64,
+          :cores                   => 64,
+          :ram                     => 274878,
+          :disk                    => 2400,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 4
         },
         {
           :id                      => "m5d.24xlarge",
@@ -1225,11 +1325,31 @@ module Fog
           :instance_store_volumes  => 0
         },
         {
+          :id                      => "m5a.8xlarge",
+          :name                    => "M5 (AMD) Eight Extra Large",
+          :bits                    => 64,
+          :cores                   => 32,
+          :ram                     => 137439,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
           :id                      => "m5a.12xlarge",
           :name                    => "M5 (AMD) Twelve Extra Large",
           :bits                    => 64,
           :cores                   => 48,
           :ram                     => 206158,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+       {
+          :id                      => "m5a.16xlarge",
+          :name                    => "M5 (AMD) Sixteen Extra Large",
+          :bits                    => 64,
+          :cores                   => 64,
+          :ram                     => 274878,
           :disk                    => 0,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
