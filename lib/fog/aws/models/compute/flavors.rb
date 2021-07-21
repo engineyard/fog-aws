@@ -1,16 +1,26 @@
 require 'fog/aws/models/compute/flavor'
 
 module Fog
-  module Compute
-    class AWS
+  module AWS
+    class Compute
       FLAVORS = [
         {
           :id                      => 't1.micro',
           :name                    => 'Micro Instance',
-          :bits                    => 0,
-          :cores                   => 2,
+          :bits                    => 32,
+          :cores                   => 1,
           :disk                    => 0,
-          :ram                     => 613,
+          :ram                     => 658,
+          :ebs_optimized_available => false,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 't2.nano',
+          :name                    => 'Nano Instance',
+          :bits                    => 64,
+          :cores                   => 1,
+          :disk                    => 0,
+          :ram                     => 536,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 0
         },
@@ -20,7 +30,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 1,
           :disk                    => 0,
-          :ram                     => 1024,
+          :ram                     => 1073,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 0
         },
@@ -30,7 +40,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 1,
           :disk                    => 0,
-          :ram                     => 2048,
+          :ram                     => 2147,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 0
         },
@@ -40,7 +50,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 2,
           :disk                    => 0,
-          :ram                     => 4096,
+          :ram                     => 4294,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 0
         },
@@ -50,7 +60,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 2,
           :disk                    => 0,
-          :ram                     => 8192,
+          :ram                     => 8589,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 0
         },
@@ -60,7 +70,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 4,
           :disk                    => 0,
-          :ram                     => 16384,
+          :ram                     => 17179,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 0
         },
@@ -70,7 +80,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 8,
           :disk                    => 0,
-          :ram                     => 32768,
+          :ram                     => 34359,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 0
         },
@@ -145,12 +155,72 @@ module Fog
           :instance_store_volumes  => 0
         },
         {
+          :id                      => 't3a.micro',
+          :name                    => 'T3 (AMD) Micro Instance',
+          :bits                    => 64,
+          :cores                   => 2,
+          :disk                    => 0,
+          :ram                     => 1024,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 't3a.small',
+          :name                    => 'T3 (AMD) Small Instance',
+          :bits                    => 64,
+          :cores                   => 2,
+          :disk                    => 0,
+          :ram                     => 2048,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 't3a.medium',
+          :name                    => 'T3 (AMD) Medium Instance',
+          :bits                    => 64,
+          :cores                   => 2,
+          :disk                    => 0,
+          :ram                     => 4096,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 't3a.large',
+          :name                    => 'T3 (AMD) Large Instance',
+          :bits                    => 64,
+          :cores                   => 2,
+          :disk                    => 0,
+          :ram                     => 8192,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 't3a.xlarge',
+          :name                    => 'T3 (AMD) Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 4,
+          :disk                    => 0,
+          :ram                     => 16384,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 't3a.2xlarge',
+          :name                    => 'T3 (AMD) Double Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 8,
+          :disk                    => 0,
+          :ram                     => 32768,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
           :id                      => 'm1.small',
           :name                    => 'Small Instance',
           :bits                    => 32,
           :cores                   => 1,
           :disk                    => 160,
-          :ram                     => 1740.8,
+          :ram                     => 1825,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 1
         },
@@ -158,9 +228,9 @@ module Fog
           :id                      => 'm1.medium',
           :name                    => 'Medium Instance',
           :bits                    => 32,
-          :cores                   => 2,
+          :cores                   => 1,
           :disk                    => 400,
-          :ram                     => 3750,
+          :ram                     => 4026,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 1
         },
@@ -168,9 +238,9 @@ module Fog
           :id                      => 'm1.large',
           :name                    => 'Large Instance',
           :bits                    => 64,
-          :cores                   => 4,
+          :cores                   => 2,
           :disk                    => 850,
-          :ram                     => 7680,
+          :ram                     => 8053,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 2
         },
@@ -178,19 +248,19 @@ module Fog
           :id                      => 'm1.xlarge',
           :name                    => 'Extra Large Instance',
           :bits                    => 64,
-          :cores                   => 8,
+          :cores                   => 4,
           :disk                    => 1690,
-          :ram                     => 15360,
+          :ram                     => 16106,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 4
         },
         {
           :id                      => 'c1.medium',
           :bits                    => 32,
-          :cores                   => 5,
+          :cores                   => 2,
           :disk                    => 350,
           :name                    => 'High-CPU Medium',
-          :ram                     => 1740.8,
+          :ram                     => 1825,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 1
         },
@@ -198,9 +268,9 @@ module Fog
           :id                      => 'c1.xlarge',
           :name                    => 'High-CPU Extra Large',
           :bits                    => 64,
-          :cores                   => 20,
+          :cores                   => 8,
           :disk                    => 1690,
-          :ram                     => 7168,
+          :ram                     => 7516,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 4
         },
@@ -210,7 +280,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 2,
           :disk                    => 32,
-          :ram                     => 3750,
+          :ram                     => 4026,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 2
         },
@@ -220,7 +290,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 4,
           :disk                    => 80,
-          :ram                     => 7168,
+          :ram                     => 8053,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 2
         },
@@ -230,7 +300,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 8,
           :disk                    => 160,
-          :ram                     => 15360,
+          :ram                     => 16106,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 2
         },
@@ -240,7 +310,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 16,
           :disk                    => 320,
-          :ram                     => 30720,
+          :ram                     => 32212,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 2
         },
@@ -248,9 +318,9 @@ module Fog
           :id                      => 'c3.8xlarge',
           :name                    => 'C3 Eight Extra Large',
           :bits                    => 64,
-          :cores                   => 16,
+          :cores                   => 32,
           :disk                    => 640,
-          :ram                     => 61440,
+          :ram                     => 64424,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 2
         },
@@ -260,7 +330,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 2,
           :disk                    => 0,
-          :ram                     => 3750,
+          :ram                     => 4026,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
         },
@@ -270,7 +340,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 4,
           :disk                    => 0,
-          :ram                     => 7168,
+          :ram                     => 8053,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
         },
@@ -280,7 +350,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 8,
           :disk                    => 0,
-          :ram                     => 15360,
+          :ram                     => 16106,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
         },
@@ -290,7 +360,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 16,
           :disk                    => 0,
-          :ram                     => 30720,
+          :ram                     => 32212,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
         },
@@ -300,7 +370,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 36,
           :disk                    => 0,
-          :ram                     => 61440,
+          :ram                     => 64424,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
         },
@@ -465,12 +535,92 @@ module Fog
           :instance_store_volumes  => 4
         },
         {
+          :id                      => 'c5a.large',
+          :name                    => 'C5 (AMD) Large',
+          :bits                    => 64,
+          :cores                   => 2,
+          :disk                    => 0,
+          :ram                     => 4096,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c5a.xlarge',
+          :name                    => 'C5 (AMD) Extra Large',
+          :bits                    => 64,
+          :cores                   => 4,
+          :disk                    => 0,
+          :ram                     => 8192,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c5a.2xlarge',
+          :name                    => 'C5 (AMD) Double Extra Large',
+          :bits                    => 64,
+          :cores                   => 8,
+          :disk                    => 0,
+          :ram                     => 16384,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c5a.4xlarge',
+          :name                    => 'C5 (AMD) Quadruple Extra Large',
+          :bits                    => 64,
+          :cores                   => 16,
+          :disk                    => 0,
+          :ram                     => 32768,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c5a.8xlarge',
+          :name                    => 'C5 (AMD) Eight Extra Large',
+          :bits                    => 64,
+          :cores                   => 32,
+          :disk                    => 0,
+          :ram                     => 65536,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c5a.12xlarge',
+          :name                    => 'C5 (AMD) Twelve Extra Large',
+          :bits                    => 64,
+          :cores                   => 48,
+          :disk                    => 0,
+          :ram                     => 98304,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c5a.16xlarge',
+          :name                    => 'C5 (AMD) Sixteen Extra Large',
+          :bits                    => 64,
+          :cores                   => 64,
+          :disk                    => 0,
+          :ram                     => 131072,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c5a.24xlarge',
+          :name                    => 'C5 (AMD) Twenty Four Extra Large',
+          :bits                    => 64,
+          :cores                   => 96,
+          :disk                    => 0,
+          :ram                     => 196608,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
           :id                      => 'g2.2xlarge',
           :name                    => 'GPU Double Extra Large',
           :bits                    => 64,
           :cores                   => 8,
           :disk                    => 60,
-          :ram                     => 15360,
+          :ram                     => 16106,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 1
         },
@@ -480,7 +630,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 32,
           :disk                    => 240,
-          :ram                     => 61440,
+          :ram                     => 64424,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 2
         },
@@ -488,9 +638,9 @@ module Fog
           :id                      => 'hs1.8xlarge',
           :name                    => 'High Storage Eight Extra Large',
           :bits                    => 64,
-          :cores                   => 35,
+          :cores                   => 16,
           :disk                    => 50331648,
-          :ram                     => 119808,
+          :ram                     => 125627,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 24
         },
@@ -498,9 +648,9 @@ module Fog
           :id                      => 'm2.xlarge',
           :name                    => 'High-Memory Extra Large',
           :bits                    => 64,
-          :cores                   => 6.5,
+          :cores                   => 2,
           :disk                    => 420,
-          :ram                     => 17510.4,
+          :ram                     => 18360,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 1
         },
@@ -508,9 +658,9 @@ module Fog
           :id                      => 'm2.2xlarge',
           :name                    => 'High Memory Double Extra Large',
           :bits                    => 64,
-          :cores                   => 13,
+          :cores                   => 4,
           :disk                    => 850,
-          :ram                     => 35020.8,
+          :ram                     => 36721,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 1
         },
@@ -518,9 +668,9 @@ module Fog
           :id                      => 'm2.4xlarge',
           :name                    => 'High Memory Quadruple Extra Large',
           :bits                    => 64,
-          :cores                   => 26,
+          :cores                   => 8,
           :disk                    => 1690,
-          :ram                     => 70041.6,
+          :ram                     => 73443,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 2
         },
@@ -528,9 +678,9 @@ module Fog
           :id                      => 'cr1.8xlarge',
           :name                    => 'High Memory Eight Extra Large',
           :bits                    => 64,
-          :cores                   => 88,
+          :cores                   => 32,
           :disk                    => 240,
-          :ram                     => 249856,
+          :ram                     => 261993,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 2
         },
@@ -540,7 +690,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 1,
           :disk                    => 4,
-          :ram                     => 3840,
+          :ram                     => 4026,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 1
         },
@@ -550,7 +700,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 2,
           :disk                    => 32,
-          :ram                     => 7680,
+          :ram                     => 8053,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 1
         },
@@ -560,7 +710,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 4,
           :disk                    => 80,
-          :ram                     => 15360,
+          :ram                     => 16106,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 2
         },
@@ -570,7 +720,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 8,
           :disk                    => 160,
-          :ram                     => 30720,
+          :ram                     => 32212,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 2
         },
@@ -598,9 +748,9 @@ module Fog
           :id                      => 'cc2.8xlarge',
           :name                    => 'Cluster Compute Eight Extra Large',
           :bits                    => 64,
-          :cores                   => 88,
+          :cores                   => 32,
           :disk                    => 3370,
-          :ram                     => 61952,
+          :ram                     => 64961,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 4
         },
@@ -620,7 +770,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 4,
           :disk                    => 800,
-          :ram                     => 31232,
+          :ram                     => 32749,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 1
         },
@@ -630,7 +780,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 8,
           :disk                    => 1600,
-          :ram                     => 62464,
+          :ram                     => 65498,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 2
         },
@@ -640,7 +790,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 16,
           :disk                    => 3200,
-          :ram                     => 124928,
+          :ram                     => 130996,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 4
         },
@@ -650,7 +800,7 @@ module Fog
           :bits                    => 64,
           :cores                   => 32,
           :disk                    => 6400,
-          :ram                     => 249856,
+          :ram                     => 261993,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 8
         },
@@ -719,7 +869,7 @@ module Fog
           :name                    => "R3 Large",
           :bits                    => 64,
           :cores                   => 2,
-          :ram                     => 15616,
+          :ram                     => 16374,
           :disk                    => 32,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 1
@@ -729,7 +879,7 @@ module Fog
           :name                    => "R3 Extra Large",
           :bits                    => 64,
           :cores                   => 4,
-          :ram                     => 31232,
+          :ram                     => 32749,
           :disk                    => 80,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 1
@@ -739,7 +889,7 @@ module Fog
           :name                    => "R3 Double Extra Large",
           :bits                    => 64,
           :cores                   => 8,
-          :ram                     => 62464,
+          :ram                     => 65498,
           :disk                    => 160,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 1
@@ -749,7 +899,7 @@ module Fog
           :name                    => "R3 Quadruple Extra Large",
           :bits                    => 64,
           :cores                   => 16,
-          :ram                     => 124928,
+          :ram                     => 130996,
           :disk                    => 320,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 1
@@ -759,7 +909,7 @@ module Fog
           :name                    => "R3 Eight Extra Large",
           :bits                    => 64,
           :cores                   => 32,
-          :ram                     => 249856,
+          :ram                     => 261993,
           :disk                    => 640,
           :ebs_optimized_available => false,
           :instance_store_volumes  => 2
@@ -769,7 +919,7 @@ module Fog
           :name                    => "R4 Large",
           :bits                    => 64,
           :cores                   => 2,
-          :ram                     => 15616,
+          :ram                     => 16374,
           :disk                    => 0,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
@@ -779,7 +929,7 @@ module Fog
           :name                    => "R4 Extra Large",
           :bits                    => 64,
           :cores                   => 4,
-          :ram                     => 31232,
+          :ram                     => 32749,
           :disk                    => 0,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
@@ -789,7 +939,7 @@ module Fog
           :name                    => "R4 Double Extra Large",
           :bits                    => 64,
           :cores                   => 8,
-          :ram                     => 62464,
+          :ram                     => 65498,
           :disk                    => 0,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
@@ -799,7 +949,7 @@ module Fog
           :name                    => "R4 Quadruple Extra Large",
           :bits                    => 64,
           :cores                   => 16,
-          :ram                     => 124928,
+          :ram                     => 130996,
           :disk                    => 0,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
@@ -809,7 +959,7 @@ module Fog
           :name                    => "R4 Eight Extra Large",
           :bits                    => 64,
           :cores                   => 32,
-          :ram                     => 249856,
+          :ram                     => 261993,
           :disk                    => 0,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
@@ -818,8 +968,8 @@ module Fog
           :id                      => "r4.16xlarge",
           :name                    => "R4 Sixteen Extra Large",
           :bits                    => 64,
-          :cores                   => 32,
-          :ram                     => 499712,
+          :cores                   => 64,
+          :ram                     => 523986,
           :disk                    => 0,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
@@ -864,7 +1014,7 @@ module Fog
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
         },
-	{
+  {
           :id                      => 'r5.8xlarge',
           :name                    => 'R5 Eight Extra Large',
           :bits                    => 64,
@@ -884,7 +1034,7 @@ module Fog
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
         },
-	{
+  {
           :id                      => "r5.16xlarge",
           :name                    => "R5 Sixteen Extra Large",
           :bits                    => 64,
@@ -945,6 +1095,16 @@ module Fog
           :instance_store_volumes  => 2
         },
         {
+          :id                      => "r5d.8xlarge",
+          :name                    => "R5d Eight Extra Large",
+          :bits                    => 64,
+          :cores                   => 32,
+          :ram                     => 262144,
+          :disk                    => 1200,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 2
+        },
+        {
           :id                      => "r5d.12xlarge",
           :name                    => "R5d Twelve Extra Large",
           :bits                    => 64,
@@ -953,6 +1113,16 @@ module Fog
           :disk                    => 1800,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 2
+        },
+        {
+          :id                      => "r5d.16xlarge",
+          :name                    => "R5d Sixteen Extra Large",
+          :bits                    => 64,
+          :cores                   => 64,
+          :ram                     => 524288,
+          :disk                    => 2400,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 4
         },
         {
           :id                      => "r5d.24xlarge",
@@ -1029,7 +1199,7 @@ module Fog
           :name                    => "D2 Extra Large",
           :bits                    => 64,
           :cores                   => 4,
-          :ram                     => 31232,
+          :ram                     => 32749,
           :disk                    => 6000,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 3
@@ -1039,7 +1209,7 @@ module Fog
           :name                    => "D2 Double Extra Large",
           :bits                    => 64,
           :cores                   => 8,
-          :ram                     => 62464,
+          :ram                     => 65498,
           :disk                    => 12000,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 6
@@ -1049,7 +1219,7 @@ module Fog
           :name                    => "D2 Quadruple Extra Large",
           :bits                    => 64,
           :cores                   => 16,
-          :ram                     => 124928,
+          :ram                     => 130996,
           :disk                    => 24000,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 12
@@ -1059,7 +1229,7 @@ module Fog
           :name                    => "D2 Eight Extra Large",
           :bits                    => 64,
           :cores                   => 36,
-          :ram                     => 249856,
+          :ram                     => 261993,
           :disk                    => 48000,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 24
@@ -1069,7 +1239,7 @@ module Fog
           :name                    => "M4 Large",
           :bits                    => 64,
           :cores                   => 2,
-          :ram                     => 8192,
+          :ram                     => 8589,
           :disk                    => 0,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
@@ -1079,7 +1249,7 @@ module Fog
           :name                    => "M4 Extra Large",
           :bits                    => 64,
           :cores                   => 4,
-          :ram                     => 16384,
+          :ram                     => 17179,
           :disk                    => 0,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
@@ -1089,7 +1259,7 @@ module Fog
           :name                    => "M4 Double Extra Large",
           :bits                    => 64,
           :cores                   => 8,
-          :ram                     => 31232,
+          :ram                     => 34359,
           :disk                    => 0,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
@@ -1099,7 +1269,7 @@ module Fog
           :name                    => "M4 Quadruple Extra Large",
           :bits                    => 64,
           :cores                   => 16,
-          :ram                     => 62464,
+          :ram                     => 68719,
           :disk                    => 0,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
@@ -1109,7 +1279,7 @@ module Fog
           :name                    => "M4 Ten Extra Large",
           :bits                    => 64,
           :cores                   => 40,
-          :ram                     => 163840,
+          :ram                     => 171798,
           :disk                    => 0,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
@@ -1368,7 +1538,7 @@ module Fog
           :id                      => "p2.xlarge",
           :name                    => "General Purpose GPU Extra Large",
           :bits                    => 64,
-          :cores                   => 2496,
+          :cores                   => 4,
           :ram                     => 65498,
           :disk                    => 0,
           :ebs_optimized_available => true,
@@ -1378,7 +1548,7 @@ module Fog
           :id                      => "p2.8xlarge",
           :name                    => "General Purpose GPU Eight Extra Large",
           :bits                    => 64,
-          :cores                   => 19968,
+          :cores                   => 32,
           :ram                     => 523986,
           :disk                    => 0,
           :ebs_optimized_available => true,
@@ -1388,16 +1558,76 @@ module Fog
           :id                      => "p2.16xlarge",
           :name                    => "General Purpose GPU Sixteen Extra Large",
           :bits                    => 64,
-          :cores                   => 39936,
+          :cores                   => 64,
           :ram                     => 785979,
           :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => "p3.2xlarge",
+          :name                    => "Tesla GPU Two Extra Large",
+          :bits                    => 64,
+          :cores                   => 8,
+          :ram                     => 65498,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => "p3.8xlarge",
+          :name                    => "Tesla GPU Eight Extra Large",
+          :bits                    => 64,
+          :cores                   => 32,
+          :ram                     => 261993,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => "p3.16xlarge",
+          :name                    => "Tesla GPU Sixteen Extra Large",
+          :bits                    => 64,
+          :cores                   => 64,
+          :ram                     => 523986,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'g3.4xlarge',
+          :name                    => 'G3 Quadruple Extra Large',
+          :bits                    => 64,
+          :cores                   => 16,
+          :disk                    => 0,
+          :ram                     => 130996,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'g3.8xlarge',
+          :name                    => 'G3 Octuple Extra Large',
+          :bits                    => 64,
+          :cores                   => 32,
+          :disk                    => 0,
+          :ram                     => 261993,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'g3.16xlarge',
+          :name                    => 'G3 Sixteen Extra Large',
+          :bits                    => 64,
+          :cores                   => 64,
+          :disk                    => 0,
+          :ram                     => 523986,
           :ebs_optimized_available => true,
           :instance_store_volumes  => 0
         }
       ]
 
       class Flavors < Fog::Collection
-        model Fog::Compute::AWS::Flavor
+        model Fog::AWS::Compute::Flavor
 
         # Returns an array of all flavors that have been created
         #
@@ -1521,7 +1751,7 @@ module Fog
         #        ebs_optimized_available=false,
         #        instance_store_volumes=0
         #      >,
-        #      <Fog::Compute::AWS::Flavor
+        #      <Fog::AWS::Compute::Flavor
         #        id="m3.xlarge",
         #        bits=64,
         #        cores=13,
@@ -1531,7 +1761,7 @@ module Fog
         #        ebs_optimized_available=true,
         #        instance_store_volumes=2
         #      >,
-        #      <Fog::Compute::AWS::Flavor
+        #      <Fog::AWS::Compute::Flavor
         #        id="m3.2xlarge",
         #        bits=64,
         #        cores=26,
@@ -1566,7 +1796,7 @@ module Fog
         #
 
         def all
-          load(Fog::Compute::AWS::FLAVORS)
+          load(Fog::AWS::Compute::FLAVORS)
           self
         end
 
