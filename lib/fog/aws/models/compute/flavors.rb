@@ -1627,7 +1627,7 @@ module Fog
       ]
 
       class Flavors < Fog::Collection
-        model Fog::AWS::Compute::Flavor
+        model Fog::Compute::AWS::Flavor
 
         # Returns an array of all flavors that have been created
         #
@@ -1638,9 +1638,9 @@ module Fog
         # Returns an array of all available instances and their general information
         #
         #>> AWS.flavors.all
-        #  <Fog::AWS::Compute::Flavors
+        #  <Fog::Compute::AWS::Flavors
         #    [
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="t1.micro",
         #        bits=0,
         #        cores=2,
@@ -1650,7 +1650,7 @@ module Fog
         #        ebs_optimized_available=false,
         #        instance_store_volumes=0
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="m1.small",
         #        bits=32,
         #        cores=1,
@@ -1660,7 +1660,7 @@ module Fog
         #        ebs_optimized_available=false,
         #        instance_store_volumes=1
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="m1.medium",
         #        bits=32,
         #        cores=2,
@@ -1670,7 +1670,7 @@ module Fog
         #        ebs_optimized_available=false,
         #        instance_store_volumes=1
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="m1.large",
         #        bits=64,
         #        cores=4,
@@ -1680,7 +1680,7 @@ module Fog
         #        ebs_optimized_available=true
         #        instance_store_volumes=2
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="m1.xlarge",
         #        bits=64,
         #        cores=8,
@@ -1691,7 +1691,7 @@ module Fog
         #        instance_store_volumes=4
         #
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="c1.medium",
         #        bits=32,
         #        cores=5,
@@ -1701,7 +1701,7 @@ module Fog
         #        ebs_optimized_available=false,
         #        instance_store_volumes=1
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="c1.xlarge",
         #        bits=64,
         #        cores=20,
@@ -1711,7 +1711,7 @@ module Fog
         #        ebs_optimized_available=true,
         #        instance_store_volumes=4
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="m2.xlarge",
         #        bits=64,
         #        cores=6.5,
@@ -1721,7 +1721,7 @@ module Fog
         #        ebs_optimized_available=false,
         #        instance_store_volumes=1
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="m2.2xlarge",
         #        bits=64,
         #        cores=13,
@@ -1731,7 +1731,7 @@ module Fog
         #        ebs_optimized_available=true,
         #        instance_store_volumes=1
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="m2.4xlarge",
         #        bits=64,
         #        cores=26,
@@ -1741,7 +1741,7 @@ module Fog
         #        ebs_optimized_available=true,
         #        instance_store_volumes=2
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="cc1.4xlarge",
         #        bits=64,
         #        cores=33.5,
@@ -1751,7 +1751,7 @@ module Fog
         #        ebs_optimized_available=false,
         #        instance_store_volumes=0
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="m3.xlarge",
         #        bits=64,
         #        cores=13,
@@ -1761,7 +1761,7 @@ module Fog
         #        ebs_optimized_available=true,
         #        instance_store_volumes=2
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="m3.2xlarge",
         #        bits=64,
         #        cores=26,
@@ -1771,7 +1771,7 @@ module Fog
         #        ebs_optimized_available=true,
         #        instance_store_volumes=2
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="cc2.8xlarge",
         #        bits=64,
         #        cores=88,
@@ -1781,7 +1781,7 @@ module Fog
         #        ebs_optimized_available=false,
         #        instance_store_volumes=4
         #      >,
-        #      <Fog::AWS::Compute::Flavor
+        #      <Fog::Compute::AWS::Flavor
         #        id="cg1.4xlarge",
         #        bits=64,
         #        cores=33.5,
@@ -1796,7 +1796,7 @@ module Fog
         #
 
         def all
-          load(Fog::AWS::Compute::FLAVORS)
+          load(Fog::Compute::AWS::FLAVORS)
           self
         end
 
@@ -1824,7 +1824,7 @@ module Fog
         # ==== Returns
         #
         #>> AWS.flavors.get("t1.micro")
-        # <Fog::AWS::Compute::Flavor
+        # <Fog::Compute::AWS::Flavor
         #  id="t1.micro",
         #  bits=0,
         #  cores=2,
