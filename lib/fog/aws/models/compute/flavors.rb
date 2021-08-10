@@ -1,8 +1,8 @@
 require 'fog/aws/models/compute/flavor'
 
 module Fog
-  module AWS
-    class Compute
+  module Compute
+    class AWS
       FLAVORS = [
         {
           :id                      => 't1.micro',
