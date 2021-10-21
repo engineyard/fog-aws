@@ -215,6 +215,16 @@ module Fog
           :instance_store_volumes  => 0
         },
         {
+          :id                      => 'm6g.medium',
+          :name                    => 'M6G (ARM) Medium Instance',
+          :bits                    => 64,
+          :cores                   => 1,
+          :disk                    => 0,
+          :ram                     => 4295,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
           :id                      => 'm1.small',
           :name                    => 'Small Instance',
           :bits                    => 32,
