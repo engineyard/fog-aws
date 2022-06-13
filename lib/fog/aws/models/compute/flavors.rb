@@ -365,6 +365,286 @@ module Fog
           :instance_store_volumes  => 0
         },
         {
+          :id                      => 'm6i.large',
+          :name                    => 'M6i Large Instance',
+          :bits                    => 64,
+          :cores                   => 2,
+          :disk                    => 0,
+          :ram                     => 8590,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6i.xlarge',
+          :name                    => 'M6i Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 4,
+          :disk                    => 0,
+          :ram                     => 17180,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6i.2xlarge',
+          :name                    => 'M6i Double Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 8,
+          :disk                    => 0,
+          :ram                     => 34360,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6i.4xlarge',
+          :name                    => 'M6i Quadruple Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 16,
+          :disk                    => 0,
+          :ram                     => 68719,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6i.8xlarge',
+          :name                    => 'M6i Octuple Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 32,
+          :disk                    => 0,
+          :ram                     => 137439,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6i.12xlarge',
+          :name                    => 'M6i Twelve Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 48,
+          :disk                    => 0,
+          :ram                     => 206158,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6i.16xlarge',
+          :name                    => 'M6i Sixteen Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 64,
+          :disk                    => 0,
+          :ram                     => 274878,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6i.24xlarge',
+          :name                    => 'M6i Twenty Four Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 96,
+          :disk                    => 0,
+          :ram                     => 412317,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6i.32xlarge',
+          :name                    => 'M6i Thirty Two Large Instance',
+          :bits                    => 64,
+          :cores                   => 128,
+          :disk                    => 0,
+          :ram                     => 549756,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6id.large',
+          :name                    => 'M6id Large Instance',
+          :bits                    => 64,
+          :cores                   => 2,
+          :disk                    => 118,
+          :ram                     => 8590,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6id.xlarge',
+          :name                    => 'M6id Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 4,
+          :disk                    => 237,
+          :ram                     => 17180,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6id.2xlarge',
+          :name                    => 'M6id Double Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 8,
+          :disk                    => 474,
+          :ram                     => 34360,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6id.4xlarge',
+          :name                    => 'M6id Quadruple Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 16,
+          :disk                    => 950,
+          :ram                     => 68719,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6id.8xlarge',
+          :name                    => 'M6id Octuple Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 32,
+          :disk                    => 1900,
+          :ram                     => 137439,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6id.12xlarge',
+          :name                    => 'M6id Twelve Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 48,
+          :disk                    => 2850,
+          :ram                     => 206158,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6id.16xlarge',
+          :name                    => 'M6id Sixteen Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 64,
+          :disk                    => 3800,
+          :ram                     => 274878,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6id.24xlarge',
+          :name                    => 'M6id Twenty Four Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 96,
+          :disk                    => 5700,
+          :ram                     => 412317,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6id.32xlarge',
+          :name                    => 'M6id Thirty Two Large Instance',
+          :bits                    => 64,
+          :cores                   => 128,
+          :disk                    => 7600,
+          :ram                     => 549756,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6a.large',
+          :name                    => 'M6a Large Instance',
+          :bits                    => 64,
+          :cores                   => 2,
+          :disk                    => 0,
+          :ram                     => 8590,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6a.xlarge',
+          :name                    => 'M6a Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 4,
+          :disk                    => 0,
+          :ram                     => 17180,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6a.2xlarge',
+          :name                    => 'M6a Double Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 8,
+          :disk                    => 0,
+          :ram                     => 34360,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6a.4xlarge',
+          :name                    => 'M6a Quadruple Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 16,
+          :disk                    => 0,
+          :ram                     => 68719,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6a.8xlarge',
+          :name                    => 'M6a Octuple Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 32,
+          :disk                    => 0,
+          :ram                     => 137439,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6a.12xlarge',
+          :name                    => 'M6a Twelve Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 48,
+          :disk                    => 0,
+          :ram                     => 206158,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6a.16xlarge',
+          :name                    => 'M6a Sixteen Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 64,
+          :disk                    => 0,
+          :ram                     => 274878,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6a.24xlarge',
+          :name                    => 'M6a Twenty Four Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 96,
+          :disk                    => 0,
+          :ram                     => 412317,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6a.32xlarge',
+          :name                    => 'M6a Thirty Two Large Instance',
+          :bits                    => 64,
+          :cores                   => 128,
+          :disk                    => 0,
+          :ram                     => 549756,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'm6a.48xlarge',
+          :name                    => 'M6a Fourty Eight Large Instance',
+          :bits                    => 64,
+          :cores                   => 192,
+          :disk                    => 0,
+          :ram                     => 824634,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
           :id                      => 'm1.small',
           :name                    => 'Small Instance',
           :bits                    => 32,
@@ -374,7 +654,7 @@ module Fog
           :ebs_optimized_available => false,
           :instance_store_volumes  => 1
         },
-  {
+        {
           :id                      => 'm6gd.medium',
           :name                    => 'M6GD (ARM) Medium Instance',
           :bits                    => 64,
@@ -917,6 +1197,86 @@ module Fog
         {
           :id                      => 'c6g.16xlarge',
           :name                    => 'C6G (ARM) Sixteen Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 64,
+          :disk                    => 0,
+          :ram                     => 137439,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c7g.medium',
+          :name                    => 'C7g (ARM) Medium Instance',
+          :bits                    => 64,
+          :cores                   => 1,
+          :disk                    => 0,
+          :ram                     => 2147,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c7g.large',
+          :name                    => 'C7g (ARM) Large Instance',
+          :bits                    => 64,
+          :cores                   => 2,
+          :disk                    => 0,
+          :ram                     => 4295,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c7g.xlarge',
+          :name                    => 'C7g (ARM) Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 4,
+          :disk                    => 0,
+          :ram                     => 8590,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c7g.2xlarge',
+          :name                    => 'C7g (ARM) Double Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 8,
+          :disk                    => 0,
+          :ram                     => 17180,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c7g.4xlarge',
+          :name                    => 'C7g (ARM) Quadruple Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 16,
+          :disk                    => 0,
+          :ram                     => 34360,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c7g.8xlarge',
+          :name                    => 'C7g (ARM) Octuple Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 32,
+          :disk                    => 0,
+          :ram                     => 68719,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c7g.12xlarge',
+          :name                    => 'C7g (ARM) Twelve Extra Large Instance',
+          :bits                    => 64,
+          :cores                   => 48,
+          :disk                    => 0,
+          :ram                     => 103079,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'c7g.16xlarge',
+          :name                    => 'C7g (ARM) Sixteen Extra Large Instance',
           :bits                    => 64,
           :cores                   => 64,
           :disk                    => 0,
