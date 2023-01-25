@@ -2225,6 +2225,106 @@ module Fog
           :instance_store_volumes  => 0
         },
         {
+          :id                      => "r6a.large",
+          :name                    => "R6a Large",
+          :bits                    => 64,
+          :cores                   => 2,
+          :ram                     => 17179,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => "r6a.xlarge",
+          :name                    => "R6a Extra Large",
+          :bits                    => 64,
+          :cores                   => 4,
+          :ram                     => 34359,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => "r6a.2xlarge",
+          :name                    => "R6a Double Extra Large",
+          :bits                    => 64,
+          :cores                   => 8,
+          :ram                     => 68719,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => "r6a.4xlarge",
+          :name                    => "R6a Quadruple Extra Large",
+          :bits                    => 64,
+          :cores                   => 16,
+          :ram                     => 137438,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => 'r6a.8xlarge',
+          :name                    => 'R6a Eight Extra Large',
+          :bits                    => 64,
+          :cores                   => 32,
+          :disk                    => 0,
+          :ram                     => 274878,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => "r6a.12xlarge",
+          :name                    => "R6a Twelve Extra Large",
+          :bits                    => 64,
+          :cores                   => 48,
+          :ram                     => 412316,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => "r6a.16xlarge",
+          :name                    => "R6a Sixteen Extra Large",
+          :bits                    => 64,
+          :cores                   => 64,
+          :ram                     => 549756,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => "r6a.24xlarge",
+          :name                    => "R6a Twenty Four Extra Large",
+          :bits                    => 64,
+          :cores                   => 96,
+          :ram                     => 824633,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => "r6a.32xlarge",
+          :name                    => "R6a Thirty Two Extra Large",
+          :bits                    => 64,
+          :cores                   => 128,
+          :ram                     => 1099512,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
+          :id                      => "r6a.48xlarge",
+          :name                    => "R6a Forty Eight Extra Large",
+          :bits                    => 64,
+          :cores                   => 192,
+          :ram                     => 1464844,
+          :disk                    => 0,
+          :ebs_optimized_available => true,
+          :instance_store_volumes  => 0
+        },
+        {
           :id                      => "r6i.large",
           :name                    => "R6i Large",
           :bits                    => 64,
