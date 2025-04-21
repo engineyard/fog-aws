@@ -233,21 +233,24 @@ module Fog
                         'fromPort'    => -1,
                         'toPort'      => -1,
                         'ipProtocol'  => 'icmp',
-                        'ipRanges'    => []
+                        'ipRanges'    => [],
+                        'ipv6Ranges'  => []
                       },
                       {
                         'groups'      => [{'groupName' => 'default', 'userId' => owner_id, 'groupId' => security_group_id}],
                         'fromPort'    => 0,
                         'toPort'      => 65535,
                         'ipProtocol'  => 'tcp',
-                        'ipRanges'    => []
+                        'ipRanges'    => [],
+                        'ipv6Ranges'  => []
                       },
                       {
                         'groups'      => [{'groupName' => 'default', 'userId' => owner_id, 'groupId' => security_group_id}],
                         'fromPort'    => 0,
                         'toPort'      => 65535,
                         'ipProtocol'  => 'udp',
-                        'ipRanges'    => []
+                        'ipRanges'    => [],
+                        'ipv6Ranges'  => []
                       }
                     ],
                     'ownerId'             => owner_id
@@ -454,7 +457,7 @@ module Fog
 
         def tagged_resources(resources)
           Array(resources).map do |resource_id|
-            if match = resource_id.match(/^(\w+)-[a-z0-9]{8}/i)
+            if match = resource_id.match(/^(\w+)-[a-z0-9]{8,17}/i)
               id = match.captures.first
             else
               raise(Fog::Service::NotFound.new("Unknown resource id #{resource_id}"))

@@ -14,6 +14,7 @@ module Fog
         attribute :associate_public_ip,      :aliases => 'associatePublicIP'
         attribute :availability_zone,        :aliases => 'availabilityZone'
         attribute :block_device_mapping,     :aliases => 'blockDeviceMapping'
+        attribute :hibernation_options,      :aliases => 'hibernationOptions'
         attribute :network_interfaces,       :aliases => 'networkInterfaces'
         attribute :client_token,             :aliases => 'clientToken'
         attribute :disable_api_termination,  :aliases => 'disableApiTermination'
@@ -49,6 +50,7 @@ module Fog
         attribute :subnet_id,                :aliases => 'subnetId'
         attribute :tenancy
         attribute :tags,                     :aliases => 'tagSet'
+        attribute :tag_specifications,       :aliases => 'tagSpecifications'
         attribute :user_data
         attribute :virtualization_type,      :aliases => 'virtualizationType'
         attribute :vpc_id,                   :aliases => 'vpcId'
@@ -144,6 +146,7 @@ module Fog
 
           options = {
             'BlockDeviceMapping'          => block_device_mapping,
+            'HibernationOptions'          => hibernation_options,
             'NetworkInterfaces'           => network_interfaces,
             'ClientToken'                 => client_token,
             'DisableApiTermination'       => disable_api_termination,
@@ -164,6 +167,7 @@ module Fog
             'SecurityGroupId'             => security_group_ids,
             'SubnetId'                    => subnet_id,
             'UserData'                    => user_data,
+            'TagSpecifications'           => tag_specifications,
           }
           options.delete_if {|key, value| value.nil?}
 
@@ -227,9 +231,9 @@ module Fog
           true
         end
 
-        def stop(force = false)
+        def stop(options = {})
           requires :id
-          service.stop_instances(id, force)
+          service.stop_instances(id, options)
           true
         end
 

@@ -39,6 +39,7 @@ module Fog
         attribute :storage_type,                       :aliases => 'StorageType'
         attribute :tde_credential_arn,                 :aliases => 'TdeCredentialArn'
         attribute :vpc_security_groups,                :aliases => 'VpcSecurityGroups', :type => :array
+        attribute :db_subnet_group,                    :aliases => 'DBSubnetGroup'
 
         attr_accessor :password, :parameter_group_name, :security_group_names, :port, :source_snapshot_id
 
@@ -118,14 +119,14 @@ module Fog
           else
             requires :engine
 
-            if engine == 'aurora'
+            if engine.start_with?('aurora')
               requires :cluster_id
-              self.flavor_id ||= 'db.r3.large'
+              self.flavor_id ||= 'db.r4.large'
             else
               requires :master_username
               requires :password
               requires :allocated_storage
-              self.flavor_id ||= 'db.m1.small'
+              self.flavor_id ||= 'db.m4.large'
             end
 
             data = service.create_db_instance(id, attributes_to_params)

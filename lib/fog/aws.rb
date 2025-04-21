@@ -26,6 +26,7 @@ module Fog
     autoload :ECS,              File.expand_path('../aws/ecs', __FILE__)
     autoload :EFS,              File.expand_path('../aws/efs', __FILE__)
     autoload :ELB,              File.expand_path('../aws/elb', __FILE__)
+    autoload :ELBV2,            File.expand_path('../aws/elbv2', __FILE__)
     autoload :EMR,              File.expand_path('../aws/emr', __FILE__)
     autoload :ElasticBeanstalk, File.expand_path('../aws/beanstalk', __FILE__)
     autoload :Elasticache,      File.expand_path('../aws/elasticache', __FILE__)
@@ -58,6 +59,7 @@ module Fog
     service(:ecs,             'ECS')
     service(:efs,             'EFS')
     service(:elb,             'ELB')
+    service(:elbv2,           'ELBV2')
     service(:emr,             'EMR')
     service(:federation,      'Federation')
     service(:glacier,         'Glacier')
@@ -218,6 +220,8 @@ module Fog
 
     def self.regions
       @regions ||= [
+        'af-south-1',
+        'ap-east-1',
         'ap-northeast-1', 'ap-northeast-2', 'ap-northeast-3',
         'ap-south-1',
         'ap-southeast-1', 'ap-southeast-2',
@@ -225,10 +229,13 @@ module Fog
         'cn-north-1',
         'cn-northwest-1',
         'eu-central-1',
-        'eu-west-1', 'eu-west-2', 'eu-west-3',
+        'eu-north-1',
+        'eu-west-1', 'eu-west-2', 'eu-west-3', 'eu-south-1',
+        'me-south-1',
         'us-east-1', 'us-east-2',
         'us-west-1', 'us-west-2',
         'sa-east-1',
+        'us-gov-east-1',
         'us-gov-west-1'
       ]
     end

@@ -4,6 +4,13 @@ module Fog
   module AWS
     class Storage
       class File < Fog::Model
+        # @deprecated use {Fog::AWS::Storage::MIN_MULTIPART_CHUNK_SIZE} instead
+        MIN_MULTIPART_CHUNK_SIZE = Fog::AWS::Storage::MIN_MULTIPART_CHUNK_SIZE
+        # @deprecated use {Fog::AWS::Storage::MAX_SINGLE_PUT_SIZE} instead
+        MAX_SINGLE_PUT_SIZE = Fog::AWS::Storage::MAX_SINGLE_PUT_SIZE
+        # @deprecated not used for anything
+        MULTIPART_COPY_THRESHOLD = 15728640
+
         # @see AWS Object docs http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectOps.html
 
         identity  :key,             :aliases => 'Key'
@@ -25,13 +32,55 @@ module Fog
         attribute :encryption_key,      :aliases => 'x-amz-server-side-encryption-customer-key'
         attribute :version,             :aliases => 'x-amz-version-id'
         attribute :kms_key_id,          :aliases => 'x-amz-server-side-encryption-aws-kms-key-id'
+        attribute :tags,                :aliases => 'x-amz-tagging'
+        attribute :website_redirect_location, :aliases => 'x-amz-website-redirect-location'
+
+        UploadPartData = Struct.new(:part_number, :upload_options, :etag)
+
+        class PartList
+          def initialize(parts = [])
+            @parts = parts
+            @mutex = Mutex.new
+          end
+
+          def push(part)
+            @mutex.synchronize { @parts.push(part) }
+          end
+
+          def shift
+            @mutex.synchronize { @parts.shift }
+          end
+
+          def clear!
+            @mutex.synchronize { @parts.clear }
+          end
+
+          def size
+            @mutex.synchronize { @parts.size }
+          end
+
+          def to_a
+            @mutex.synchronize { @parts.dup }
+          end
+        end
 
         # @note Chunk size to use for multipart uploads.
         #     Use small chunk sizes to minimize memory. E.g. 5242880 = 5mb
         attr_reader :multipart_chunk_size
         def multipart_chunk_size=(mp_chunk_size)
-          raise ArgumentError.new("minimum multipart_chunk_size is 5242880") if mp_chunk_size < 5242880
+          service.validate_chunk_size(mp_chunk_size, 'multipart_chunk_size')
           @multipart_chunk_size = mp_chunk_size
+        end
+
+        # @note Number of threads used to copy files.
+        def concurrency=(concurrency)
+          raise ArgumentError.new('minimum concurrency is 1') if concurrency.to_i < 1
+
+          @concurrency = concurrency.to_i
+        end
+
+        def concurrency
+          @concurrency || 1
         end
 
         def acl
@@ -59,15 +108,16 @@ module Fog
         # @return [File]
         #
         def body
-          return attributes[:body] if attributes[:body]
-          return '' unless last_modified
+          return attributes[:body] if attributes.key?(:body)
 
           file = collection.get(identity)
-          if file
-            attributes[:body] = file.body
-          else
-            attributes[:body] = ''
-          end
+
+          attributes[:body] =
+            if file
+              file.body
+            else
+              ''
+            end
         end
 
         # Set body attribute.
@@ -98,7 +148,17 @@ module Fog
         #
         def copy(target_directory_key, target_file_key, options = {})
           requires :directory, :key
-          service.copy_object(directory.key, key, target_directory_key, target_file_key, options)
+
+          self.multipart_chunk_size = service.max_copy_chunk_size if multipart_chunk_size.nil?
+
+          if multipart_chunk_size > 0 && self.content_length.to_i >= multipart_chunk_size
+            upload_part_options = options.select { |key, _| ALLOWED_UPLOAD_PART_OPTIONS.include?(key.to_sym) }
+            upload_part_options = upload_part_options.merge({ 'x-amz-copy-source' => "#{directory.key}/#{key}" })
+            multipart_copy(options, upload_part_options, target_directory_key, target_file_key)
+          else
+            service.copy_object(directory.key, key, target_directory_key, target_file_key, options)
+          end
+
           target_directory = service.directories.new(:key => target_directory_key)
           target_directory.files.head(target_file_key)
         end
@@ -192,6 +252,8 @@ module Fog
         # @option options [String] expires sets number of seconds before AWS Object expires.
         # @option options [String] storage_class sets x-amz-storage-class HTTP header. Defaults to 'STANDARD'. Or, 'REDUCED_REDUNDANCY'
         # @option options [String] encryption sets HTTP encryption header. Set to 'AES256' to encrypt files at rest on S3
+        # @option options [String] tags sets x-amz-tagging HTTP header. For example, 'Org-Id=1' or 'Org-Id=1&Service=MyService'
+        # @option options [String] website_redirect_location sets x-amz-website-redirect-location HTTP header. For example, 'website_redirect_location=http://www.rubydoc.info/github/fog/fog-aws'
         # @return [Boolean] true if no errors
         #
         def save(options = {})
@@ -208,12 +270,12 @@ module Fog
           options['Expires'] = expires if expires
           options.merge!(metadata)
           options['x-amz-storage-class'] = storage_class if storage_class
+          options['x-amz-tagging'] = tags if tags
+          options['x-amz-website-redirect-location'] = website_redirect_location if website_redirect_location
           options.merge!(encryption_headers)
 
-          # With a single PUT operation you can upload objects up to 5 GB in size. Automatically set MP for larger objects.
-          self.multipart_chunk_size = 5242880 if !multipart_chunk_size && Fog::Storage.get_body_size(body) > 5368709120
-
-          if multipart_chunk_size && Fog::Storage.get_body_size(body) >= multipart_chunk_size && body.respond_to?(:read)
+          self.multipart_chunk_size = service.max_put_chunk_size if multipart_chunk_size.nil?
+          if multipart_chunk_size > 0 && Fog::Storage.get_body_size(body) >= multipart_chunk_size && body.respond_to?(:read)
             data = multipart_save(options)
             merge_attributes(data.body)
           else
@@ -291,6 +353,30 @@ module Fog
           service.complete_multipart_upload(directory.key, key, upload_id, part_tags)
         end
 
+        def multipart_copy(options, upload_part_options, target_directory_key, target_file_key)
+          # Initiate the upload
+          res = service.initiate_multipart_upload(target_directory_key, target_file_key, options)
+          upload_id = res.body["UploadId"]
+
+          # Store ETags of upload parts
+          part_tags = []
+          pending = PartList.new(create_part_list(upload_part_options))
+          thread_count = self.concurrency
+          completed = PartList.new
+          errors = upload_in_threads(target_directory_key, target_file_key, upload_id, pending, completed, thread_count)
+
+          raise errors.first if errors.any?
+
+          part_tags = completed.to_a.sort_by { |part| part.part_number }.map(&:etag)
+        rescue => e
+          # Abort the upload & reraise
+          service.abort_multipart_upload(target_directory_key, target_file_key, upload_id) if upload_id
+          raise
+        else
+          # Complete the upload
+          service.complete_multipart_upload(target_directory_key, target_file_key, upload_id, part_tags)
+        end
+
         def encryption_headers
           if encryption && encryption_key
             encryption_customer_key_headers
@@ -314,6 +400,49 @@ module Fog
             'x-amz-server-side-encryption-customer-key' => Base64.encode64(encryption_key.to_s).chomp!,
             'x-amz-server-side-encryption-customer-key-md5' => Base64.encode64(OpenSSL::Digest::MD5.digest(encryption_key.to_s)).chomp!
           }
+        end
+
+        def create_part_list(upload_part_options)
+          current_pos = 0
+          count = 0
+          pending = []
+
+          while current_pos < self.content_length do
+            start_pos = current_pos
+            end_pos = [current_pos + self.multipart_chunk_size, self.content_length - 1].min
+            range = "bytes=#{start_pos}-#{end_pos}"
+            part_options = upload_part_options.dup
+            part_options['x-amz-copy-source-range'] = range
+            pending << UploadPartData.new(count + 1, part_options, nil)
+            count += 1
+            current_pos = end_pos + 1
+          end
+
+          pending
+        end
+
+        def upload_in_threads(target_directory_key, target_file_key, upload_id, pending, completed, thread_count)
+          threads = []
+
+          thread_count.times do
+            thread = Thread.new do
+              begin
+                while part = pending.shift
+                  part_upload = service.upload_part_copy(target_directory_key, target_file_key, upload_id, part.part_number, part.upload_options)
+                  part.etag = part_upload.body['ETag']
+                  completed.push(part)
+                end
+              rescue => error
+                pending.clear!
+                error
+              end
+            end
+
+            thread.abort_on_exception = true
+            threads << thread
+          end
+
+          threads.map(&:value).compact
         end
       end
     end

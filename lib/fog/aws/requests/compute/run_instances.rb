@@ -30,6 +30,8 @@ module Fog
         #     * 'Ebs.Encrypted'<~Boolean> - specifies whether or not the volume is to be encrypted unless snapshot is specified
         #     * 'Ebs.VolumeType'<~String> - Type of EBS volue. Valid options in ['standard', 'io1'] default is 'standard'.
         #     * 'Ebs.Iops'<~String> - The number of I/O operations per second (IOPS) that the volume supports. Required when VolumeType is 'io1'
+        #   * 'HibernationOptions'<~Array>: array of hashes
+        #     * 'Configured'<~Boolean> - specifies whether or not the instance is configued for hibernation.  This parameter is valid only if the instance meets the hibernation prerequisites.  
         #   * 'NetworkInterfaces'<~Array>: array of hashes
         #     * 'NetworkInterfaceId'<~String> - An existing interface to attach to a single instance
         #     * 'DeviceIndex'<~String> - The device index. Applies both to attaching an existing network interface and creating a network interface
@@ -42,6 +44,11 @@ module Fog
         #     * 'PrivateIpAddresses.Primary'<~Bool> - Indicates whether the private IP address is the primary private IP address.
         #     * 'SecondaryPrivateIpAddressCount'<~Bool> - The number of private IP addresses to assign to the network interface.
         #     * 'AssociatePublicIpAddress'<~String> - Indicates whether to assign a public IP address to an instance in a VPC. The public IP address is assigned to a specific network interface
+        #   * 'TagSpecifications'<~Array>: array of hashes
+        #     * 'ResourceType'<~String> - Type of resource to apply tags on, e.g: instance or volume
+        #     * 'Tags'<~Array> - List of hashs reprensenting tag to be set
+        #       * 'Key'<~String> - Tag name
+        #       * 'Value'<~String> - Tag value
         #   * 'ClientToken'<~String> - unique case-sensitive token for ensuring idempotency
         #   * 'DisableApiTermination'<~Boolean> - specifies whether or not to allow termination of the instance from the api
         #   * 'SecurityGroup'<~Array> or <~String> - Name of security group(s) for instances (not supported for VPC)
@@ -75,6 +82,8 @@ module Fog
         #           * 'deviceName'<~String> - specifies how volume is exposed to instance
         #           * 'status'<~String> - status of attached volume
         #           * 'volumeId'<~String> - Id of attached volume
+        #         * 'hibernationOptions'<~Array>
+        #           * 'configured'<~Boolean> - whether or not the instance is enabled for hibernation               
         #         * 'dnsName'<~String> - public dns name, blank until instance is running
         #         * 'imageId'<~String> - image id of ami used to launch instance
         #         * 'instanceId'<~String> - id of the instance
@@ -111,6 +120,13 @@ module Fog
               end
             end
           end
+          if hibernation_options = options.delete('HibernationOptions')
+            hibernation_options.each_with_index do |mapping, index|
+              for key, value in mapping
+                options.merge!({ format("HibernationOptions.%d.#{key}", index) => value })
+              end
+            end
+          end
           if security_groups = options.delete('SecurityGroup')
             options.merge!(Fog::AWS.indexed_param('SecurityGroup', [*security_groups]))
           end
@@ -130,6 +146,45 @@ module Fog
                 else
                   options.merge!({ "#{iface}.#{key}" => value })
                 end
+              end
+            end
+          end
+          if tag_specifications = options.delete('TagSpecifications')
+            # From https://docs.aws.amazon.com/sdk-for-ruby/v2/api/Aws/EC2/Client.html#run_instances-instance_method
+            # And https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html
+            # Discussed at https://github.com/fog/fog-aws/issues/603
+            #
+            # Example
+            #
+            # TagSpecifications: [
+            #     {
+            #       ResourceType: "instance",
+            #       Tags: [
+            #         {
+            #           Key: "Project",
+            #           Value: "MyProject",
+            #         },
+            #       ],
+            #     },
+            #     {
+            #       ResourceType: "volume",
+            #       Tags: [
+            #         {
+            #           Key: "Project",
+            #           Value: "MyProject",
+            #         },
+            #       ],
+            #     },
+            # ]
+            tag_specifications.each_with_index do |val, idx|
+              resource_type = val["ResourceType"]
+              tags = val["Tags"]
+              options["TagSpecification.#{idx}.ResourceType"] = resource_type
+              tags.each_with_index do |tag, tag_idx|
+                aws_tag_key = "TagSpecification.#{idx}.Tag.#{tag_idx}.Key"
+                aws_tag_value = "TagSpecification.#{idx}.Tag.#{tag_idx}.Value"
+                options[aws_tag_key] = tag["Key"]
+                options[aws_tag_value] = tag["Value"]
               end
             end
           end
@@ -182,6 +237,14 @@ module Fog
               }
             end
 
+	    hibernation_options = (options['HibernationOptions'] || []).reduce([]) do |mapping, device|
+              configure = device.fetch("Configure", true)
+
+              mapping << {
+                "Configure" => configure,
+              }
+            end
+
             if options['SubnetId']
               if options['PrivateIpAddress']
                 ni_options = {'PrivateIpAddress' => options['PrivateIpAddress']}
@@ -221,6 +284,7 @@ module Fog
               'associatePublicIP'     => options['associatePublicIP'] || false,
               'architecture'          => 'i386',
               'blockDeviceMapping'    => block_device_mapping,
+              'hibernationOptions'    => hibernation_options,
               'networkInterfaces'     => network_interfaces,
               'clientToken'           => options['clientToken'],
               'dnsName'               => nil,

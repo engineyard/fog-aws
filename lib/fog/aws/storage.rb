@@ -6,12 +6,16 @@ module Fog
       COMPLIANT_BUCKET_NAMES = /^(?:[a-z]|\d(?!\d{0,2}(?:\.\d{1,3}){3}$))(?:[a-z0-9]|\.(?![\.\-])|\-(?![\.])){1,61}[a-z0-9]$/
 
       DEFAULT_REGION = 'us-east-1'
+      ACCELERATION_HOST = 's3-accelerate.amazonaws.com'
 
       DEFAULT_SCHEME = 'https'
       DEFAULT_SCHEME_PORT = {
         'http' => 80,
         'https' => 443
       }
+
+      MIN_MULTIPART_CHUNK_SIZE = 5242880
+      MAX_SINGLE_PUT_SIZE = 5368709120
 
       VALID_QUERY_KEYS = %w[
         acl
@@ -42,7 +46,7 @@ module Fog
       ]
 
       requires :aws_access_key_id, :aws_secret_access_key
-      recognizes :endpoint, :region, :host, :port, :scheme, :persistent, :use_iam_profile, :aws_session_token, :aws_credentials_expire_at, :path_style, :instrumentor, :instrumentor_name, :aws_signature_version
+      recognizes :endpoint, :region, :host, :port, :scheme, :persistent, :use_iam_profile, :aws_session_token, :aws_credentials_expire_at, :path_style, :acceleration, :instrumentor, :instrumentor_name, :aws_signature_version, :enable_signature_v4_streaming, :virtual_host, :cname, :max_put_chunk_size, :max_copy_chunk_size, :aws_credentials_refresh_threshold_seconds
 
       secrets    :aws_secret_access_key, :hmac
 
@@ -83,6 +87,7 @@ module Fog
       request :get_object_http_url
       request :get_object_https_url
       request :get_object_url
+      request :get_object_tagging
       request :get_request_payment
       request :get_service
       request :head_bucket
@@ -106,12 +111,25 @@ module Fog
       request :put_object
       request :put_object_acl
       request :put_object_url
+      request :put_object_tagging
       request :put_request_payment
       request :sync_clock
       request :upload_part
+      request :upload_part_copy
 
       module Utils
         attr_accessor :region
+
+        # Amazon S3 limits max chunk size that can be uploaded/copied in a single request to 5GB.
+        # Other S3-compatible storages (like, Ceph) do not have such limit.
+        # Ceph shows much better performance when file is copied as a whole, in a single request.
+        # fog-aws user can use these settings to configure chunk sizes.
+        # A non-positive value will tell fog-aws to use a single put/copy request regardless of file size.
+        #
+        # @return [Integer]
+        # @see https://docs.aws.amazon.com/AmazonS3/latest/userguide/copy-object.html
+        attr_reader :max_put_chunk_size
+        attr_reader :max_copy_chunk_size
 
         def cdn
           @cdn ||= Fog::AWS::CDN.new(
@@ -167,12 +185,28 @@ module Fog
           params_to_url(params)
         end
 
+        # @param value [int]
+        # @param description [str]
+        def validate_chunk_size(value, description)
+          raise "#{description} (#{value}) is less than minimum #{MIN_MULTIPART_CHUNK_SIZE}" unless value <= 0 || value >= MIN_MULTIPART_CHUNK_SIZE
+        end
+
         private
 
         def validate_signature_version!
           unless @signature_version == 2 || @signature_version == 4
             raise "Unknown signature version #{@signature_version}; valid versions are 2 or 4"
           end
+        end
+
+        def init_max_put_chunk_size!(options = {})
+          @max_put_chunk_size = options.fetch(:max_put_chunk_size, MAX_SINGLE_PUT_SIZE)
+          validate_chunk_size(@max_put_chunk_size, 'max_put_chunk_size')
+        end
+
+        def init_max_copy_chunk_size!(options = {})
+          @max_copy_chunk_size = options.fetch(:max_copy_chunk_size, MAX_SINGLE_PUT_SIZE)
+          validate_chunk_size(@max_copy_chunk_size, 'max_copy_chunk_size')
         end
 
         def v4_signed_params_for_url(params, expires)
@@ -224,7 +258,7 @@ module Fog
           when %r{\Acn-.*}
             "s3.#{region}.amazonaws.com.cn"
           else
-            "s3-#{region}.amazonaws.com"
+            "s3.#{region}.amazonaws.com"
           end
         end
 
@@ -280,16 +314,22 @@ module Fog
               path_style = params.fetch(:path_style, @path_style)
               if !path_style
                 if COMPLIANT_BUCKET_NAMES !~ bucket_name
-                  Fog::Logger.warning("fog: the specified s3 bucket name(#{bucket_name}) is not a valid dns name, which will negatively impact performance.  For details see: http://docs.amazonwebservices.com/AmazonS3/latest/dev/BucketRestrictions.html")
+                  Fog::Logger.warning("fog: the specified s3 bucket name(#{bucket_name}) is not a valid dns name, which will negatively impact performance.  For details see: https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html")
                   path_style = true
                 elsif scheme == 'https' && !path_style && bucket_name =~ /\./
-                  Fog::Logger.warning("fog: the specified s3 bucket name(#{bucket_name}) contains a '.' so is not accessible over https as a virtual hosted bucket, which will negatively impact performance.  For details see: http://docs.amazonwebservices.com/AmazonS3/latest/dev/BucketRestrictions.html")
+                  Fog::Logger.warning("fog: the specified s3 bucket name(#{bucket_name}) contains a '.' so is not accessible over https as a virtual hosted bucket, which will negatively impact performance.  For details see: https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html")
                   path_style = true
                 end
               end
 
-              if path_style
+              # uses the bucket name as host if `virtual_host: true`, you can also
+              # manually specify the cname if required.
+              if params[:virtual_host]
+                host = params.fetch(:cname, bucket_name)
+              elsif path_style
                 path = bucket_to_path bucket_name, path
+              elsif host.start_with?("#{bucket_name}.")
+                # no-op
               else
                 host = [bucket_name, host].join('.')
               end
@@ -442,6 +482,10 @@ module Fog
 
 
           @path_style = options[:path_style] || false
+
+          init_max_put_chunk_size!(options)
+          init_max_copy_chunk_size!(options)
+
           @signature_version = options.fetch(:aws_signature_version, 4)
           validate_signature_version!
           setup_credentials(options)
@@ -456,6 +500,8 @@ module Fog
         end
 
         def setup_credentials(options)
+          @aws_credentials_refresh_threshold_seconds = options[:aws_credentials_refresh_threshold_seconds]
+
           @aws_access_key_id = options[:aws_access_key_id]
           @aws_secret_access_key = options[:aws_secret_access_key]
           @aws_session_token     = options[:aws_session_token]
@@ -499,9 +545,14 @@ module Fog
           @instrumentor_name  = options[:instrumentor_name] || 'fog.aws.storage'
           @connection_options     = options[:connection_options] || {}
           @persistent = options.fetch(:persistent, false)
+          @acceleration = options.fetch(:acceleration, false)
           @signature_version = options.fetch(:aws_signature_version, 4)
+          @enable_signature_v4_streaming = options.fetch(:enable_signature_v4_streaming, true)
           validate_signature_version!
           @path_style = options[:path_style]  || false
+
+          init_max_put_chunk_size!(options)
+          init_max_copy_chunk_size!(options)
 
           @region = options[:region] || DEFAULT_REGION
 
@@ -516,6 +567,7 @@ module Fog
             @port       = options[:port]        || DEFAULT_SCHEME_PORT[@scheme]
           end
 
+          @host = ACCELERATION_HOST if @acceleration
           setup_credentials(options)
         end
 
@@ -527,6 +579,8 @@ module Fog
 
 
         def setup_credentials(options)
+          @aws_credentials_refresh_threshold_seconds = options[:aws_credentials_refresh_threshold_seconds]
+
           @aws_access_key_id     = options[:aws_access_key_id]
           @aws_secret_access_key = options[:aws_secret_access_key]
           @aws_session_token     = options[:aws_session_token]
@@ -580,20 +634,24 @@ module Fog
           if @signature_version == 4
             params[:headers]['x-amz-date'] = date.to_iso8601_basic
             if params[:body].respond_to?(:read)
-              # See http://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html
-              # We ignore the bit about setting the content-encoding to aws-chunked because
-              # this can cause s3 to serve files with a blank content encoding which causes problems with some CDNs
-              # AWS have confirmed that s3 can infer that the content-encoding is aws-chunked from the x-amz-content-sha256 header
-              #
-              params[:headers]['x-amz-content-sha256'] = 'STREAMING-AWS4-HMAC-SHA256-PAYLOAD'
-              params[:headers]['x-amz-decoded-content-length'] = params[:headers].delete 'Content-Length'
+              if @enable_signature_v4_streaming
+                # See http://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html
+                # We ignore the bit about setting the content-encoding to aws-chunked because
+                # this can cause s3 to serve files with a blank content encoding which causes problems with some CDNs
+                # AWS have confirmed that s3 can infer that the content-encoding is aws-chunked from the x-amz-content-sha256 header
+                #
+                params[:headers]['x-amz-content-sha256'] = 'STREAMING-AWS4-HMAC-SHA256-PAYLOAD'
+                params[:headers]['x-amz-decoded-content-length'] = params[:headers].delete 'Content-Length'
+              else
+                params[:headers]['x-amz-content-sha256'] = 'UNSIGNED-PAYLOAD'
+              end
             else
               params[:headers]['x-amz-content-sha256'] ||= OpenSSL::Digest::SHA256.hexdigest(params[:body] || '')
             end
             signature_components = @signer.signature_components(params, date, params[:headers]['x-amz-content-sha256'])
             params[:headers]['Authorization'] = @signer.components_to_header(signature_components)
 
-            if params[:body].respond_to?(:read)
+            if params[:body].respond_to?(:read) && @enable_signature_v4_streaming
               body = params.delete :body
               params[:request_block] = S3Streamer.new(body, signature_components['X-Amz-Signature'], @signer, date)
             end

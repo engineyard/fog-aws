@@ -14,20 +14,21 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/fog/fog-aws"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files -z`.split("\x0")
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+  spec.files         = Dir['lib/**/*.{rb,json}',
+                           'CHANGELOG.md', 'CONTRIBUTING.md', 'CONTRIBUTORS.md',
+                           'LICENSE.md', 'README.md', 'fog-aws.gemspec',]
+  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
   spec.required_ruby_version = '>= 2.0.0'
 
-  spec.add_development_dependency 'bundler', '~> 1.15'
-  spec.add_development_dependency 'rake',    '~> 10.0'
-  spec.add_development_dependency 'rubyzip', '~> 1.2.1'
+  spec.add_development_dependency 'bundler'
+  spec.add_development_dependency 'github_changelog_generator', '~> 1.16'
+  spec.add_development_dependency 'rake',    '>= 12.3.3'
+  spec.add_development_dependency 'rubyzip', '~> 2.3.0'
   spec.add_development_dependency 'shindo',  '~> 0.3'
 
   spec.add_dependency 'fog-core',  '~> 2.1'
   spec.add_dependency 'fog-json',  '~> 1.1'
   spec.add_dependency 'fog-xml',   '~> 0.1'
-  spec.add_dependency 'ipaddress', '~> 0.8'
 end
